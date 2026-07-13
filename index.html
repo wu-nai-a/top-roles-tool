@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI主播替换工具 - 格式修复 · 排序筛选 · Top角色</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #f4f5f9; --card: #fff; --text: #1a1d29; --text2: #6b7094;
+    --border: #e2e4eb; --primary: #4f6ef7; --success: #34c759;
+    --male: #4f6ef7; --female: #ff6b9d; --radius: 8px; --fixed-bg: #e8f5e9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:10px}
+  .app{max-width:100%;margin:0 auto}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:3px}
+  header h1{font-size:14px;font-weight:600}
+  header h1 small{font-size:9px;font-weight:400;color:var(--text2);margin-left:3px}
+  .uz{border:2px dashed var(--border);border-radius:var(--radius);padding:16px 10px;text-align:center;background:var(--card);cursor:pointer;transition:border-color .2s;margin-bottom:5px}
+  .uz:hover,.uz.dragover{border-color:var(--primary);background:#eef1ff}
+  .uz .icon{font-size:20px;opacity:.5}
+  .uz p{color:var(--text2);font-size:10px;margin:2px 0}
+  .uz .btn{padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer}
+  #fi{display:none}
+  .prog{display:none;text-align:center;padding:20px 10px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+  .prog .spin{display:inline-block;width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:s .7s linear infinite;margin-bottom:4px}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .prog .step{font-size:12px;font-weight:500}
+  .prog .det{font-size:9px;color:var(--text2)}
+  .prog .barw{width:40%;max-width:200px;height:4px;background:var(--border);border-radius:3px;margin:6px auto 0;overflow:hidden}
+  .prog .barf{height:100%;width:0;background:var(--primary);border-radius:3px;transition:width .3s}
+  .cfg{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;margin-bottom:4px;display:none}
+  .cfg h3{font-size:10px;font-weight:600;margin-bottom:2px;color:var(--text)}
+  .cfg-row{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center}
+  .cfg-row label{font-size:9px;color:var(--text2);display:flex;align-items:center;gap:2px}
+  .cfg-row select,.cfg-row input{padding:2px 3px;border:1px solid var(--border);border-radius:3px;font-size:9px;background:#fff}
+  .cfg-row textarea{padding:2px 3px;border:1px solid var(--border);border-radius:3px;font-size:9px;font-family:monospace;resize:vertical;height:30px;width:160px}
+  .cfg .btn{padding:2px 6px;border-radius:3px;font-size:9px;border:1px solid var(--border);background:#fff;cursor:pointer}
+  .cfg .btn:hover{border-color:var(--primary);color:var(--primary)}
+  .sum{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;display:none;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:4px}
+  .sum .st{display:flex;flex-direction:column;min-width:40px}
+  .sum .st .nm{font-size:12px;font-weight:700}
+  .sum .st .lb{font-size:8px;color:var(--text2)}
+  .sum .st.m .nm{color:var(--male)}.sum .st.f .nm{color:var(--female)}
+  .sum .st.fx .nm{color:var(--success)}.sum .st.tp .nm{color:var(--primary)}
+  .fxr{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;display:none;margin-bottom:4px}
+  .fxr h3{font-size:9px;font-weight:600}
+  .fxr .fxg{display:flex;flex-wrap:wrap;gap:2px}
+  .fxr .fxi{font-size:8px;padding:2px 5px;border-radius:3px;background:var(--fixed-bg)}
+  .fxr .fxi .lb{font-weight:600;color:var(--success)}
+  .tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;background:var(--card);border-radius:var(--radius) var(--radius) 0 0}
+  .tab{padding:4px 7px;font-size:10px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2);white-space:nowrap;transition:all .12s}
+  .tab:hover{color:var(--text)}.tab.act{color:var(--primary);border-bottom-color:var(--primary)}
+  .sc{display:none}.sc.act{display:block}
+  .flt{display:flex;flex-wrap:wrap;gap:3px;align-items:center;background:var(--card);padding:3px 5px;border:1px solid var(--border);border-top:none}
+  .flt label,.flt span{font-size:9px;color:var(--text2);display:flex;align-items:center;gap:2px}
+  .flt input{padding:1px 3px;border:1px solid var(--border);border-radius:2px;font-size:9px}
+  .flt input[type=number]{width:36px}.flt input[type=text]{width:70px}
+  .flt .tag{padding:1px 5px;border-radius:6px;font-size:8px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;transition:all .12s}
+  .flt .tag.act{background:var(--success);color:#fff;border-color:var(--success)}
+  .tw{background:var(--card);border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:auto;max-height:calc(100vh - 260px)}
+  table{width:100%;border-collapse:collapse;font-size:9px}
+  thead{background:#f8f9fe}
+  th{padding:2px 3px;text-align:left;font-weight:600;white-space:nowrap;border-bottom:1px solid var(--border);position:sticky;top:0;background:#f8f9fe;z-index:2;font-size:8px}
+  th.cf{background:#e8f5e9}th.cf::after{content:" ✓";color:var(--success);font-size:7px}
+  td{padding:2px 3px;border-bottom:1px solid var(--border);vertical-align:middle;max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  tr:hover td{background:#f8f9fe}
+  tr.tr-top td{background:#f0f7f0}tr.tr-dup td{background:#fffbe6}tr.tr-live td{background:#fff0f0}
+  td .av{width:16px;height:16px;border-radius:50%;object-fit:cover;background:#eee;vertical-align:middle}
+  td .gb{display:inline-block;padding:1px 3px;border-radius:3px;font-size:8px;font-weight:600}
+  .gb.m{background:#eef1ff;color:var(--male)}.gb.f{background:#fff0f5;color:var(--female)}
+  td .nc{text-align:right;font-family:monospace;font-size:9px}
+  td .fc{color:var(--success);font-weight:600}td .ec{color:#ccc}
+  .chk{width:10px;height:10px;cursor:pointer;vertical-align:middle}
+  .badge{display:inline-block;padding:1px 3px;border-radius:2px;font-size:7px;font-weight:600;line-height:1.2}
+  .badge-live{background:#ffe0e0;color:#d32f2f}
+  .badge-dup{background:#fff3e0;color:#e65100}
+  .badge-hot{background:#e3f2fd;color:#1565c0}
+  .badge-old{background:#e8f5e9;color:#2e7d32}
+  .badge-ok{background:#f3e5f5;color:#7b1fa2}
+  .badge-newvoice{background:#fce4ec;color:#c62828}
+  .legend{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;margin-top:4px;display:flex;flex-wrap:wrap;gap:3px 10px;font-size:8px;color:var(--text2);align-items:center}
+  .legend span{display:inline-flex;align-items:center;gap:2px}
+  .act{display:flex;gap:3px;justify-content:flex-end;align-items:center;margin-top:4px;flex-wrap:wrap}
+  .act .btn{padding:2px 6px;border:none;border-radius:3px;font-size:9px;cursor:pointer;transition:opacity .12s}
+  .act .btn:hover{opacity:.8}.act .bp{background:var(--primary);color:#fff}
+  .act .bs{background:var(--success);color:#fff}
+  .act .bo{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .act .btn:disabled{opacity:.35;cursor:not-allowed}
+  .toast{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#1a1d29;color:#fff;padding:4px 12px;border-radius:4px;font-size:9px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999}
+  .toast.show{opacity:1}
+  .rp{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 6px;max-height:260px;overflow-y:auto}
+  .rp h3{font-size:9px;font-weight:600;margin-bottom:2px}
+  .rpi{display:flex;align-items:center;gap:3px;padding:2px 0;border-bottom:1px solid var(--border);font-size:9px}
+  .rpi .rm{background:none;border:none;color:#ff3b30;cursor:pointer;font-size:8px;margin-left:auto;padding:1px 2px}
+  @media(max-width:768px){body{padding:3px}header h1{font-size:12px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>🍩 AI主播替换 <small>格式修复 · 排序筛选 · 音色分类</small></h1></header>
+
+<div class="uz" id="uz">
+  <div class="icon">📋</div>
+  <p>拖拽 xlsx 到此处，或点击选择文件</p>
+  <button class="btn" id="ub">选择文件</button>
+  <input type="file" id="fi" accept=".xlsx,.xls">
+</div>
+
+<div class="prog" id="prog">
+  <div class="spin"></div>
+  <div class="step" id="ps">准备中...</div>
+  <div class="det" id="pd"></div>
+  <div class="barw"><div class="barf" id="pb"></div></div>
+</div>
+
+<div class="sum" id="sum"></div>
+<div class="fxr" id="fxr"></div>
+
+<div class="cfg" id="cfg">
+  <h3>⚙️ 配置</h3>
+  <div class="cfg-row">
+    <label>时段筛选 <select id="periodSel">
+      <option value="all">全部时段</option>
+      <option value="3">近3天</option>
+      <option value="7">近7天</option>
+      <option value="14">近14天</option>
+      <option value="30">近30天</option>
+      <option value="custom">自定义</option>
+    </select></label>
+    <label><input type="checkbox" id="periodExclude"> 排除此时段 → 看其余时段数据</label>
+    <label id="dateLabel" style="display:none">从 <input type="date" id="dateFrom" style="width:90px"> 到 <input type="date" id="dateTo" style="width:90px"></label>
+  </div>
+  <div class="cfg-row" style="margin-top:2px">
+    <label>已开播UID <textarea id="liveUids" placeholder="每行一个"></textarea></label>
+    <button class="btn" id="btnApplyExclude">应用</button>
+    <span id="liveCount" style="font-size:8px;color:var(--text2)"></span>
+    <button class="btn" id="btnDedupAvatars">🖼 头像去重</button>
+    <span id="dedupStatus" style="font-size:8px;color:var(--text2)"></span>
+  </div>
+</div>
+
+<div id="mc" style="display:none">
+  <div class="tabs">
+    <div class="tab act" data-s="all">📊 总表</div>
+    <div class="tab" data-s="male">👦 男</div>
+    <div class="tab" data-s="female">👧 女</div>
+    <div class="tab" data-s="analysis">📊 分析</div>
+    <div class="tab" data-s="newvoice">🎙️ 新音色</div>
+    <div class="tab" data-s="replace">📋 清单</div>
+  </div>
+  <div class="flt">
+    <label>最低 <input type="number" id="mcf" value="0" min="0"></label>
+    <label>ID <input type="text" id="sf" placeholder="搜索"></label>
+    <div class="tag" id="tt">🏆 Top≥100</div>
+    <span style="margin-left:auto"><span id="rc">0</span>/<span id="tc">0</span></span>
+  </div>
+
+  <div class="sc act" id="s-all"><div class="tw"><table><thead id="th-all"></thead><tbody id="tb-all"></tbody></table></div></div>
+  <div class="sc" id="s-male"><div class="tw"><table><thead id="th-male"></thead><tbody id="tb-male"></tbody></table></div></div>
+  <div class="sc" id="s-female"><div class="tw"><table><thead id="th-female"></thead><tbody id="tb-female"></tbody></table></div></div>
+  <div class="sc" id="s-analysis"><div class="tw" id="analysisContent"><div style="padding:14px;text-align:center;color:var(--text2);">加载中...</div></div></div>
+  <div class="sc" id="s-newvoice"><div class="tw"><table><thead id="th-newvoice"></thead><tbody id="tb-newvoice"></tbody></table></div></div>
+  <div class="sc" id="s-replace"><div class="rp" id="rp"></div></div>
+
+  <div class="legend">
+    <span>🎙️新音色 | 🔴已播 | 🔄重复 | 🔥新星(≤14天) | ⭐沉淀(>14天) | 🟢可替</span>
+    <span style="margin-left:auto">💡时段筛选:控制"总表/男/女"标签页的范围，勾选"排除"则看剩余数据</span>
+  </div>
+
+  <div class="act">
+    <button class="btn bo" id="brf">🔄 刷新</button>
+    <button class="btn bp" id="bar">➕ 添加至清单</button>
+    <button class="btn bs" id="bex" disabled>📥 导出替换清单</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var H=['user_id','昵称','角色类型','性别','头像','tag','角色创建时间','创建者id','创建者注册时间','创作者性别','总聊天人数','深度聊天用户数【一天内有过聊天>10轮的用户】','总深度聊天率','女性聊天人数','女性深度聊天用户数【一天内聊天>10轮的用户】','女性深度聊天率','男性聊天人数','男性深度聊天用户数【一天内聊天>10轮的用户】','男性深度聊天率','角色简介','角色设定','开场白','开场白声音','voice_id','角色性格','说话风格','关系故事'];
+var SH=['user_id','昵称','角色类型','性别','头像','tag','角色创建时间','总聊天人数','voice_id','角色简介','角色性格'];
+var NC={};H.forEach(function(h){if(/人数|率/.test(h)&&h!=='角色类型')NC[h]=true;});
+
+var rows=[],cmap=[],fixs={},rlist=[],topOnly=false,ready=false;
+var liveSet={},dupSet={};
+var periodDays=0,periodExclude=false; // 时段过滤
+
+var caches={};
+var curSec='fixed';
+
+var $=function(id){return document.getElementById(id);};
+var T=$('toast'),tm=null;
+function msg(s,d){T.textContent=s;T.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){T.classList.remove('show');},d||1500);}
+
+$('ub').addEventListener('click',function(){$('fi').click();});
+$('uz').addEventListener('click',function(e){if(e.target!==$('ub'))$('fi').click();});
+$('fi').addEventListener('change',function(e){if(e.target.files[0])loadF(e.target.files[0]);});
+['dragover','dragenter'].forEach(function(e){$('uz').addEventListener(e,function(ev){ev.preventDefault();$('uz').classList.add('dragover');});});
+['dragleave','drop'].forEach(function(e){$('uz').addEventListener(e,function(ev){ev.preventDefault();$('uz').classList.remove('dragover');});});
+$('uz').addEventListener('drop',function(e){if(e.dataTransfer.files[0])loadF(e.dataTransfer.files[0]);});
+
+function pg(s,d,p){$('ps').textContent=s;$('pd').textContent=d||'';if(p!==undefined)$('pb').style.width=p+'%';$('prog').style.display='block';}
+function hp(){$('prog').style.display='none';}
+
+function loadF(file){
+  if(!file.name.match(/\.xlsx?$/i)){msg('请上传 .xlsx 文件');return;}
+  var mb=file.size/1024/1024;
+  if(mb>500){msg('文件超过 500MB');return;}
+  if(mb>200)msg('⚠️ 超过 200MB');
+  rows=[];cmap=[];fixs={};rlist=[];topOnly=false;ready=false;liveSet={};dupSet={};caches={};
+  $('mc').style.display='none';$('sum').style.display='none';$('fxr').style.display='none';$('cfg').style.display='none';$('uz').style.display='none';
+  pg('读取...',mb.toFixed(1)+' MB',0);
+  setTimeout(function(){
+    var r=new FileReader();
+    r.onprogress=function(e){if(e.lengthComputable)pg('读取...',(e.loaded/1024/1024).toFixed(1)+'/'+(e.total/1024/1024).toFixed(1)+'MB',Math.round(e.loaded/e.total*30));};
+    r.onload=function(e){
+      pg('解析表格...','',35);
+      requestAnimationFrame(function(){
+        try{
+          var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellText:false,cellDates:false});
+          pg('读取数据...','',50);
+          setTimeout(function(){
+            try{
+              var ws=wb.Sheets[wb.SheetNames[0]];var ref=XLSX.utils.decode_range(ws['!ref']);var B=5000,rd=[];
+              var hj=XLSX.utils.sheet_to_json(ws,{header:1,range:{s:{r:0,c:0},e:{r:0,c:ref.e.c}},defval:''});
+              var rh=hj[0]?hj[0].map(function(h){return String(h).trim();}):[];
+              var hl={};H.forEach(function(h){hl[h.toLowerCase().replace(/[\s\-_【】]/g,'')]=h;});
+              cmap=rh.map(function(r){return hl[r.toLowerCase().replace(/[\s\-_【】]/g,'')]||r;});
+              var cr=1;
+              (function rb(){var er=Math.min(cr+B-1,ref.e.r);
+                try{var batch=XLSX.utils.sheet_to_json(ws,{header:1,range:{s:{r:cr,c:0},e:{r:er,c:ref.e.c}},defval:''});
+                for(var bi=0;bi<batch.length;bi++){var raw=batch[bi],row={},has=false;for(var ci=0;ci<cmap.length;ci++){var v=raw[ci]!==undefined?raw[ci]:'';if(v===null||v===undefined)v='';row[cmap[ci]]=v;if(v!=='')has=true;}if(has)rd.push(row);}
+                cr=er+1;if(cr<=ref.e.r){var pct=50+Math.round((cr-ref.s.r)/(ref.e.r-ref.s.r)*30);pg('解析...',Math.min(cr,ref.e.r)+'/'+(ref.e.r-ref.s.r)+'行',Math.min(pct,80));setTimeout(rb,0);}
+                else{rows=rd;setTimeout(fix,0);}}catch(err){msg('解析出错');hp();$('uz').style.display='block';}})();
+            }catch(err){msg('失败');console.error(err);hp();$('uz').style.display='block';}
+          },0);
+        }catch(err){msg('失败');console.error(err);hp();$('uz').style.display='block';}
+      });
+    };r.readAsArrayBuffer(file);
+  },100);
+}
+
+function fix(){
+  pg('修复数值...','',82);
+  setTimeout(function(){
+    fixs={};var nk=Object.keys(NC);
+    for(var ci=0;ci<nk.length;ci++){var col=nk[ci];if(cmap.indexOf(col)===-1)continue;var fixed=0,ex=[];
+      for(var ri=0;ri<rows.length;ri++){var row=rows[ri],raw=String(row[col]).trim();
+        if(raw===''||/^(none|nan|na|null|undefined)$/i.test(raw)){row[col]=0;continue;}
+        var cleaned=raw.replace(/[,\s]/g,''),num=parseFloat(cleaned);
+        if(!isNaN(num)){if(String(num)!==cleaned){fixed++;row[col]=num;if(ex.length<3&&cleaned.length<15)ex.push(raw);}else row[col]=num;}else row[col]=0;}
+      if(fixed>0)fixs[col]={fixed:fixed,examples:ex};}
+    ready=true;pg('渲染...','',95);setTimeout(done,0);
+  },0);
+}
+
+function done(){
+  var m=0,f=0,tc=0;
+  for(var i=0;i<rows.length;i++){var g=gd(rows[i]);if(g==='男')m++;else if(g==='女')f++;if(cht(rows[i])>=100)tc++;}
+  var fk=Object.keys(fixs);
+  $('sum').style.display='flex';
+  $('sum').innerHTML='<div class="st"><div class="nm">'+rows.length.toLocaleString()+'</div><div class="lb">总角色</div></div><div class="st m"><div class="nm">'+m.toLocaleString()+'</div><div class="lb">男</div></div><div class="st f"><div class="nm">'+f.toLocaleString()+'</div><div class="lb">女</div></div><div class="st tp"><div class="nm">'+tc.toLocaleString()+'</div><div class="lb">Top(≥100)</div></div><div class="st fx" style="margin-left:auto"><div class="nm">'+fk.length+'</div><div class="lb">修复列</div></div>';
+  if(fk.length){$('fxr').style.display='block';var h='<h3>🔧 数值格式已修复：</h3><div class="fxg">';for(var ki=0;ki<fk.length;ki++){var s=fixs[fk[ki]];h+='<div class="fxi"><span class="lb">'+fk[ki]+'</span> <span class="sm">'+s.fixed.toLocaleString()+'条'+(s.examples.length?' 例:'+s.examples.join(','):'')+'</span></div>';}h+='</div>';$('fxr').innerHTML=h;}
+  $('tc').textContent=rows.length.toLocaleString();hp();$('cfg').style.display='block';$('mc').style.display='block';
+  rs('all');msg('✅ 已加载 '+rows.length.toLocaleString()+' 条');
+}
+
+function v(row,col){var x=row[col];return(x!==undefined&&x!==null)?x:'';}
+function cht(row){var x=v(row,'总聊天人数');return typeof x==='number'?x:0;}
+function gd(row){var g=String(v(row,'性别')).trim().toLowerCase();if(/^(male|男|男生|1)$/.test(g))return '男';if(/^(female|女|女生|2)$/.test(g))return '女';return g||'未知';}
+function isTR(r){return cht(r)>=100;}
+function dt(r){return v(row,'角色创建时间');}
+function parseDate(d){if(!d)return null;var p=d.split('-');if(p.length!==3)return null;return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
+function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return d;}
+function isLive(r){return liveSet[String(v(r,'user_id'))]?true:false;}
+function isDup(r){return dupSet[String(v(r,'user_id'))]?true:false;}
+function isNewVoice(r){var vid=String(v(r,'voice_id')).trim().toLowerCase();return/^nansheng|^nvsheng/.test(vid);}
+
+// Period filter
+function inPeriod(r){
+  if(!periodDays)return true;
+  var d=vt(r);if(!d)return false;
+  var pd=parseDate(d);if(!pd)return false;
+  var inside=pd>=daysAgo(periodDays);
+  return periodExclude?!inside:inside;
+}
+function vt(r){return v(r,'角色创建时间');}
+
+// Is this role created recently (within hotDays)?
+
+function compStatus(r){
+  var s=[];
+  if(isNewVoice(r))s.push('newvoice');
+  if(isLive(r))s.push('live');
+  if(isDup(r))s.push('dup');
+  if(isTR(r)&&vt(r)){var d=parseDate(vt(r));if(d){var age=(new Date()-d)/(864e5);if(age<=14)s.push('newhot');else s.push('established');}}
+  if(!s.length&&isTR(r))s.push('ok');
+  return s;
+}
+
+// ── Controls ──
+$('periodSel').addEventListener('change',function(){
+  var v=this.value;
+  if(v==='all'){periodDays=0;$('dateLabel').style.display='none';}
+  else if(v==='custom'){periodDays=0;$('dateLabel').style.display='inline-flex';}
+  else{periodDays=parseInt(v);$('dateLabel').style.display='none';}
+  caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);
+});
+$('periodExclude').addEventListener('change',function(){periodExclude=this.checked;caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('dateFrom').addEventListener('change',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('dateTo').addEventListener('change',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+
+$('btnApplyExclude').addEventListener('click',function(){
+  var txt=$('liveUids').value.trim();liveSet={};
+  if(txt){txt.split('\n').forEach(function(l){l=l.trim();if(l)liveSet[l]=true;});}
+  $('liveCount').textContent=Object.keys(liveSet).length+'个';caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);
+});
+
+$('btnDedupAvatars').addEventListener('click',function(){
+  var btn=this,st=$('dedupStatus');btn.disabled=true;st.textContent='加载中...';
+  setTimeout(function(){
+    var cand=rows.filter(function(r){return v(r,'头像');});
+    if(cand.length>300)cand=cand.slice(0,300);
+    var total=cand.length,loaded=0,hashes={};
+    function next(i){
+      if(i>=total){dupSet={};var dc=0;for(var h in hashes){if(hashes[h].length>1){for(var j=1;j<hashes[h].length;j++){dupSet[String(v(hashes[h][j],'user_id'))]=true;dc++;}}}
+        st.textContent='✅ 重复:'+dc+' ('+total+'个)';btn.disabled=false;caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);return;}
+      var row=cand[i],img=new Image();img.crossOrigin='anonymous';
+      img.onload=function(){try{var cvs=document.createElement('canvas');cvs.width=8;cvs.height=8;var ctx=cvs.getContext('2d');ctx.drawImage(img,0,0,8,8);var d=ctx.getImageData(0,0,8,8).data,sum=0;for(var k=0;k<64;k++)sum+=d[k*4]+d[k*4+1]+d[k*4+2];var avg=sum/192,hash='';for(var k=0;k<64;k++)hash+=d[k*4]+d[k*4+1]+d[k*4+2]>avg?'1':'0';if(!hashes[hash])hashes[hash]=[];hashes[hash].push(row);}catch(e){}loaded++;if(loaded%10===0)st.textContent='扫描:'+loaded+'/'+total;next(i+1);};
+      img.onerror=function(){loaded++;next(i+1);};img.src=v(row,'头像');
+    }next(0);
+  },100);
+});
+
+// ── Data fetching (with caching) ──
+function getC(section){
+  var ck=section+'_p'+periodDays+'x'+(periodExclude?1:0)+'_m'+($('mcf').value||'0')+'_s'+($('sf').value||'')+'_t'+(topOnly?1:0)+'_l'+Object.keys(liveSet).length+'_d'+Object.keys(dupSet).length+'_f'+($('dateFrom').value||'')+'_t'+($('dateTo').value||'');
+  if(caches[ck])return caches[ck];
+
+  var data=[];
+  var min=parseInt($('mcf').value)||0;
+  var search=$('sf').value.trim().toLowerCase();
+  var dFrom=$('dateFrom').value?parseDate($('dateFrom').value):null;
+  var dTo=$('dateTo').value?parseDate($('dateTo').value):null;
+  if(dTo)dTo.setHours(23,59,59,999);
+  var usePeriod=(section!=='fixed'&&section!=='newvoice');
+
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i],c=cht(r);
+    if(c<min)continue;
+    if(topOnly&&c<100)continue;
+    if(search){var id=String(v(r,'user_id')).toLowerCase();if(id.indexOf(search)===-1)continue;}
+    if(section==='male'&&gd(r)!=='男')continue;
+    if(section==='female'&&gd(r)!=='女')continue;
+    if(section==='newvoice'&&!isNewVoice(r))continue;
+    if(usePeriod&&!inPeriod(r))continue;
+    data.push(r);
+  }
+  data.sort(function(a,b){return cht(b)-cht(a);});
+  caches[ck]=data;
+  return data;
+}
+
+function getCols(s){return SH;}
+
+function rs(section){
+  if(!ready)return;
+  curSec=section;
+  if(section==='analysis'){renderAnalysis();return;}
+  var tb=document.getElementById('tb-'+section),th=document.getElementById('th-'+section);
+  if(!tb||!th)return;
+  var data=getC(section),cols=getCols(section);
+  var showCheck=(section!=='replace');
+  var repSet={};for(var ri=0;ri<rlist.length;ri++)repSet[rlist[ri]]=true;
+
+  var hh='<tr><th style="width:14px;text-align:center;">#</th><th style="width:18px;">图</th>';
+  for(var hi=0;hi<cols.length;hi++){var col=cols[hi];hh+='<th class="'+(fixs[col]?'cf':'')+'">'+col+'</th>';}
+  hh+='<th style="width:44px;">状态</th>';
+  if(showCheck)hh+='<th style="text-align:center;width:18px;">✓</th>';
+  hh+='</tr>';th.innerHTML=hh;
+
+  var LIM=500;
+  var disp=data,ttl=data.length;
+  if(data.length>LIM)disp=data.slice(0,LIM);
+
+  var body='';
+  for(var di=0;di<disp.length;di++){
+    var row=disp[di],id=v(row,'user_id'),img=v(row,'头像');
+    var g=gd(row),gc=g==='男'?'m':(g==='女'?'f':'');
+    var top=isTR(row),checked=repSet[String(id)];
+    var st=compStatus(row);
+    var rc='';
+    if(st.indexOf('live')>=0)rc='tr-live';else if(st.indexOf('dup')>=0)rc='tr-dup';else if(top)rc='tr-top';
+    body+='<tr class="'+rc+'">';
+    body+='<td style="text-align:center;color:var(--text2);font-weight:600;">'+(di+1)+'</td>';
+    body+='<td>'+(img?'<img class="av" src="'+img+'" onerror="this.style.display=\'none\'">':'—')+'</td>';
+    for(var hi2=0;hi2<cols.length;hi2++){
+      var col2=cols[hi2],val2=v(row,col2);
+      if(col2==='性别'){body+='<td><span class="gb '+gc+'">'+g+'</span></td>';}
+      else if(NC[col2]){var n=typeof val2==='number'?val2:0;var isF=fixs[col2]?true:false;var fmt=col2.indexOf('率')>=0?n.toFixed(4):n.toLocaleString();body+='<td class="nc'+(isF?' fc':'')+'">'+(n===0&&val2===''?'<span class="ec">0</span>':fmt)+'</td>';}
+      else{var s=String(val2);body+='<td'+(s.length>20?' title="'+s.replace(/"/g,'&quot;')+'"':'')+'>'+(s.length>20?s.slice(0,20)+'…':(s||'<span class="ec">—</span>'))+'</td>';}
+    }
+    var badges=[];
+    if(st.indexOf('newvoice')>=0)badges.push('<span class="badge badge-newvoice">🎙️新音</span>');
+    if(st.indexOf('live')>=0)badges.push('<span class="badge badge-live">🔴已播</span>');
+    if(st.indexOf('dup')>=0)badges.push('<span class="badge badge-dup">🔄重复</span>');
+    if(st.indexOf('newhot')>=0)badges.push('<span class="badge badge-hot">🔥新星</span>');
+    if(st.indexOf('established')>=0)badges.push('<span class="badge badge-old">⭐沉淀</span>');
+    if(st.indexOf('ok')>=0&&!badges.length)badges.push('<span class="badge badge-ok">🟢可替</span>');
+    body+='<td>'+(badges.join(' ')||'<span style="color:var(--text2);font-size:7px;">—</span>')+'</td>';
+    if(showCheck)body+='<td style="text-align:center;"><input type="checkbox" class="chk" data-id="'+id+'"'+(checked?' checked':'')+'></td>';
+    body+='</tr>';
+  }
+  if(!disp.length)body='<tr><td colspan="30" style="text-align:center;padding:10px;color:var(--text2);font-size:9px;">没有匹配的数据。可在配置中调整时段筛选范围。</td></tr>';
+  tb.innerHTML=body;
+  var note=ttl.toLocaleString();
+  
+  $('rc').textContent=note;
+}
+
+
+// ── Analysis ──
+// Tag dictionary: tag name → Chinese meaning
+var TAG_DICT={
+'tag_romance':'恋爱','tag_anime':'动漫','tag_companion':'陪伴','tag_ancient':'古风',
+'tag_campus':'校园','tag_city':'都市','tag_yujie':'御姐','tag_yinghan':'硬汉',
+'tag_personification':'拟人','tag_siduitou':'死对头','tag_pet':'宠物','tag_weizhuang':'伪装',
+'tag_esports':'电竞','tag_weixianmiren':'危险迷人','tag_fanfiction':'同人',
+'tag_fantasy':'奇幻','tag_danmei':'耽美','tag_yuri':'百合','tag_workplace':'职场',
+'baiqiehei':'白切黑','chulianlian':'初恋脸','diaoxi':'调戏','fancha':'反差',
+'jujia':'居家','nianshang':'年上','nianxia':'年下','qiangfancha':'强反差',
+'qiangzhanyouyu':'强占有欲','shunv':'淑女','yindaoxing':'引导型',
+'nuan_nan':'暖男','gao_leng':'高冷','sha_diao':'沙雕','fu_hei':'腹黑',
+'zha_nan':'渣男','bai_yue_guang':'白月光','ci_xing_bing_jiao':'病娇',
+'ci_xing_bu_ji':'不羁','dia_dia_shao_nv':'嗲嗲少女','ci_xing_dan_mei':'耽美',
+'rou_qiang':'肉强','yue_ye_lang_ren':'月夜狼人','leng_mo':'冷漠',
+'xiao_tian_quan':'小甜犬','si_bi':'撕逼','jin_ji':'禁忌','chuang_yue':'穿越',
+'zhong_sheng':'重生','xian_xia':'仙侠','wu_xia':'武侠','ke_huan':'科幻',
+'xuan_huan':'玄幻','xiao_yuan':'校园','qing_chun':'青春','zhi_yu':'治愈',
+'yu_kuai':'愉快',
+};
+
+// Archetype recognition: keyword + theme patterns
+function classifyArchetype(row){
+  var desc=v(row,'角色简介')||'';
+  var tagStr='';
+  try{tagStr=JSON.parse(v(row,'tag')||'[]').join(' ');}catch(e){}
+  var roleName=v(row,'昵称')||'';
+  var text=(desc+' '+tagStr+' '+roleName).toLowerCase();
+  
+  // Extract bracket themes: [xxx] or 【xxx】
+  var bracketThemes=[];
+  var bm1=desc.match(/\[([^\]]+)\]/);
+  var bm2=desc.match(/【([^】]+)】/);
+  if(bm1)bracketThemes=bm1[1].split(/[\s,\/、]+/).map(function(s){return s.trim();}).filter(function(s){return s.length>1;});
+  if(bm2)bracketThemes=bracketThemes.concat(bm2[1].split(/[\s,\/、]+/).map(function(s){return s.trim();}).filter(function(s){return s.length>1;}));
+  
+  // Scoring system for archetypes
+  var rules=[
+    {name:'😈 霸道总裁',kws:['霸总','总裁','帝王','陛下','主宰','掌控','强势','上位者','帝少','首席','ceo','集团总裁','商界','商业帝国','掌权者'],wt:1},
+    {name:'🧊 高冷禁欲',kws:['高冷','禁欲','清冷','淡漠','冷漠','冰山','冷面','不近人情','生人勿近'],wt:1},
+    {name:'🐶 年下奶狗',kws:['年下','奶狗','小奶狗','年下小狗','粘人','撒娇','纯情','阳光开朗','小太阳','可爱','少年感','狗狗眼','年下恋'],wt:1},
+    {name:'💼 豪门世家',kws:['豪门','少爷','贵公子','世家','千金','名门','富家','大少爷','二少爷','大家族','继承人','财阀','名媛'],wt:1},
+    {name:'💀 病娇偏执',kws:['病娇','偏执','占有欲','疯狂','阴郁','偏激','病态','执念','疯狂的爱','囚禁','禁锢','扭曲','黑化'],wt:1},
+    {name:'👫 禁忌之恋',kws:['禁忌','禁止','师生','继兄','继妹','禁忌之恋','背德','不伦','嫂子','姐夫','叔嫂','伦理'],wt:1},
+    {name:'🕰️ 古风权谋',kws:['古风','古代','王朝','皇帝','将军','宫廷','权谋','王爷','殿下','太子','公主','后宫','丞相','江山','天下','侯爷','世子','古言','先婚后爱'],wt:1},
+    {name:'🏙️ 都市爱情',kws:['都市','现代','city','职场','契约','总裁秘书','办公室','白领','合租','同居','闪婚','先婚后爱'],wt:1},
+    {name:'🌹 温柔体贴',kws:['温柔','体贴','暖男','细心','关怀','呵护','宠溺','温柔乡','逆来顺受','人夫'],wt:1},
+    {name:'🔥 强占有欲',kws:['占有欲','独占','强取豪夺','强制爱','占有','掌控','占有'],wt:1},
+    {name:'🤝 年上宠爱',kws:['年上','大叔','成熟','稳重','宠溺','照顾','年长者','爹系男友','爸爸'],wt:1},
+    {name:'🧝 玄幻奇幻',kws:['玄幻','修真','仙侠','魔法','斗气','异能','吸血鬼','狼人','精灵','魔族','神族','妖怪','灵力','法术','剑修'],wt:1},
+    {name:'📚 校园青春',kws:['校园','学生','学长','同桌','青春','校霸','学霸','学生会','转校生','班长'],wt:1},
+    {name:'🎮 游戏电竞',kws:['游戏','电竞','主播','打游戏','玩家','职业选手','高手','游戏高手'],wt:1},
+    {name:'🦋 穿越重生',kws:['穿越','重生','穿书','穿剧','快穿','古代穿越','魂穿','穿到古代','重生复仇'],wt:1},
+    {name:'👑 京圈太子',kws:['京圈','太子爷','京城','京圈太子','红二代','京圈太子爷'],wt:1},
+    {name:'🎭 双重人格',kws:['双重人格','分裂','两个人格','双重身份','白切黑','黑切白','双面'],wt:1},
+    {name:'📖 文艺清新',kws:['文艺','清新','治愈','温暖','文艺青年','诗人','画家','艺术家','摄影'],wt:1},
+    {name:'👔 职场精英',kws:['精英','职业','高管','律师','医生','金融','成功人士','商业精英','检察官','法官'],wt:1},
+    {name:'🎤 天才音乐家',kws:['音乐','钢琴','小提琴','天才','艺术家','音乐家','乐队','吉他','歌手'],wt:1},
+    {name:'🩺 契约婚姻',kws:['契约','假结婚','协议','契约婚姻','合约','假情侣'],wt:1},
+    {name:'👻 灵异志怪',kws:['灵异','鬼怪','捉鬼','道士','阴阳眼','冥婚','鬼夫'],wt:1},
+    {name:'🦊 狐妖仙怪',kws:['狐妖','狐狸精','妖精','妖狐','化形','妖怪'],wt:1},
+  ];
+  
+  var scores=[];
+  rules.forEach(function(r){
+    var score=0;
+    r.kws.forEach(function(kw){if(text.indexOf(kw)>=0)score+=r.wt;});
+    // Boost if bracket themes match
+    bracketThemes.forEach(function(bt){
+      if(bt.indexOf(r.name.slice(2))>=0||r.name.indexOf(bt)>=0)score+=2;
+    });
+    if(score>0)scores.push({name:r.name,score:score});
+  });
+  scores.sort(function(a,b){return b.score-a.score;});
+  // If we have a match, return it
+  if(scores.length)return scores[0].name;
+  // Fallback: extract theme from bracket content
+  if(bracketThemes.length)return '📌 '+bracketThemes.slice(0,2).join('/');
+  // Try to extract a short theme from the first sentence of description
+  var firstLine=desc.split(/[　-〿＀-￯]+|[,.:;!?()]+/)[0];
+  if(firstLine&&firstLine.length>4&&firstLine.length<30)return '📌 '+firstLine;
+  // Last resort: extract first meaningful 2-char word
+  var words=desc.match(/[\u4e00-\u9fff]{2,4}/g);
+  if(words&&words.length)return '📌 '+words.slice(0,3).join('');
+  return '📌 '+roleName;
+}
+
+function renderAnalysis(){
+  var el=$('analysisContent');
+  if(!el)return;
+  var data=[];
+  for(var i=0;i<rows.length;i++){var r=rows[i];if(cht(r)>=100)data.push(r);}
+  if(!data.length){el.innerHTML='<div style="padding:14px;text-align:center;color:var(--text2);font-size:10px;">没有足够的高数据角色进行分析（需要总聊天人数≥100）</div>';return;}
+
+  // ---- 1. Tag analysis with Chinese meanings ----
+  var tagCount={};
+  data.forEach(function(r){
+    var t=v(r,'tag');if(!t)return;
+    try{JSON.parse(t).forEach(function(tag){
+      if(!tagCount[tag])tagCount[tag]={count:0,totalChat:0};
+      tagCount[tag].count++;tagCount[tag].totalChat+=cht(r);
+    });}catch(e){}
+  });
+  var tags=Object.keys(tagCount).sort(function(a,b){return tagCount[b].count-tagCount[a].count;});
+
+  // ---- 2. Archetype classification ----
+  var archCount={};
+  data.forEach(function(r){
+    var a=classifyArchetype(r);
+    if(!archCount[a])archCount[a]={count:0,totalChat:0,male:0,female:0};
+    archCount[a].count++;
+    archCount[a].totalChat+=cht(r);
+    if(gd(r)==='男')archCount[a].male++;else if(gd(r)==='女')archCount[a].female++;
+  });
+  var archs=Object.keys(archCount).sort(function(a,b){return archCount[b].count-archCount[a].count;});
+
+  // ---- 3. Gender-based archetype preference ----
+  var maleArch={},femaleArch={};
+  data.forEach(function(r){
+    var a=classifyArchetype(r);
+    if(gd(r)==='男'){if(!maleArch[a])maleArch[a]=0;maleArch[a]++;}
+    else if(gd(r)==='女'){if(!femaleArch[a])femaleArch[a]=0;femaleArch[a]++;}
+  });
+
+  // ---- 4. Tag gender analysis ----
+  var tagMale={},tagFemale={};
+  data.forEach(function(r){
+    var t=v(r,'tag'),g=gd(r);if(!t)return;
+    try{JSON.parse(t).forEach(function(tag){
+      if(g==='男'){if(!tagMale[tag])tagMale[tag]=0;tagMale[tag]++;}
+      else if(g==='女'){if(!tagFemale[tag])tagFemale[tag]=0;tagFemale[tag]++;}
+    });}catch(e){}
+  });
+
+  // ---- Build HTML ----
+  var s='<div style="font-size:9px;color:var(--text2);padding:6px 0;">数据分析基于 <strong>'+data.length+'</strong> 个热门角色（总聊天人数≥100）</div>';
+
+  // Summary
+  var t3=archs.slice(0,3).map(function(a){return a;}).join('、');
+  var mCount=data.filter(function(r){return gd(r)==='男';}).length;
+  var fCount=data.filter(function(r){return gd(r)==='女';}).length;
+  s+='<div class="section"><h3>📌 分析摘要</h3><table><tr><th>指标</th><th>数值</th></tr>'+
+    '<tr><td>热门角色总数</td><td><strong>'+data.length+'</strong> 个</td></tr>'+
+    '<tr><td>男性热门角色</td><td><strong style="color:var(--male)">'+mCount+'</strong> 个</td></tr>'+
+    '<tr><td>女性热门角色</td><td><strong style="color:var(--female)">'+fCount+'</strong> 个</td></tr>'+
+    '<tr><td>最受欢迎题材Top3</td><td><strong>'+t3+'</strong></td></tr>'+
+    '</table></div>';
+
+  // Archetype frequency
+  s+='<div class="section"><h3>🎭 热门题材/角色类型分析</h3><table>';
+  s+='<tr><th>题材类型</th><th>出现次数</th><th>占比</th><th>平均聊天</th><th>男性</th><th>女性</th></tr>';
+  var maxArch=archs.length?archCount[archs[0]].count:1;
+  archs.slice(0,20).forEach(function(a){
+    var ac=archCount[a];
+    var pct=(ac.count/data.length*100).toFixed(1)+'%';
+    var avg=(ac.totalChat/ac.count).toFixed(0);
+    s+='<tr class="tag-row"><td style="font-weight:500">'+a+'</td>'+
+      '<td>'+ac.count+'</td><td>'+pct+'</td>'+
+      '<td class="nc">'+avg+'</td>'+
+      '<td class="nc" style="color:var(--male)">'+ac.male+'</td>'+
+      '<td class="nc" style="color:var(--female)">'+ac.female+'</td></tr>';
+  });
+  s+='</table></div>';
+
+  // Tag frequency with Chinese meanings
+  s+='<div class="section"><h3>🏷️ 热门标签分析</h3><table>';
+  s+='<tr><th>标签</th><th>中文含义</th><th>出现次数</th><th>占比</th><th>平均聊天</th><th>男性</th><th>女性</th></tr>';
+  var maxTag=tags.length?tagCount[tags[0]].count:1;
+  tags.slice(0,25).forEach(function(t){
+    var tc=tagCount[t];
+    var meaning=TAG_DICT[t]||t.replace('tag_','');
+    var pct=(tc.count/data.length*100).toFixed(1)+'%';
+    var avg=(tc.totalChat/tc.count).toFixed(0);
+    var m=tagMale[t]||0,f=tagFemale[t]||0;
+    s+='<tr class="tag-row"><td style="font-family:monospace;font-size:8px">'+t+'</td><td>'+meaning+'</td>'+
+      '<td>'+tc.count+'</td><td>'+pct+'</td>'+
+      '<td class="nc">'+avg+'</td>'+
+      '<td class="nc" style="color:var(--male)">'+m+'</td>'+
+      '<td class="nc" style="color:var(--female)">'+f+'</td></tr>';
+  });
+  s+='</table></div>';
+
+  // Archetype × gender cross analysis
+  var maleArchs=Object.keys(maleArch).sort(function(a,b){return maleArch[b]-maleArch[a];});
+  var femaleArchs=Object.keys(femaleArch).sort(function(a,b){return femaleArch[b]-femaleArch[a];});
+  s+='<div class="section"><h3>👤 性别偏好对比</h3><table><tr><th>排序</th><th style="color:var(--male)">👦 男性角色热门题材</th><th style="color:var(--female)">👧 女性角色热门题材</th></tr>';
+  var maxRow=Math.max(maleArchs.length,femaleArchs.length);
+  for(var ri=0;ri<Math.min(maxRow,12);ri++){
+    var ml=maleArchs[ri]||'',mc=maleArch[maleArchs[ri]]||'';
+    var fl=femaleArchs[ri]||'',fc=femaleArch[femaleArchs[ri]]||'';
+    s+='<tr><td style="text-align:center">'+(ri+1)+'</td>'+
+      '<td>'+(ml?ml+' <span class="tag-row" style="color:var(--text2)">('+mc+')</span>':'—')+'</td>'+
+      '<td>'+(fl?fl+' <span style="color:var(--text2)">('+fc+')</span>':'—')+'</td></tr>';
+  }
+  s+='</table></div>';
+
+  var html='<style>.abp{font-size:9px;}.abp h3{font-size:11px;font-weight:600;margin:8px 0 4px;}.abp table{width:auto;min-width:300px;}.abp th{font-size:9px;padding:3px 6px;text-align:left;font-weight:600;background:#f8f9fe;border-bottom:1px solid var(--border);}.abp td{padding:2px 6px;font-size:9px;border-bottom:1px solid var(--border);}.abp .tag-row:hover td{background:#f8f9fe;}.abp .section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;margin-bottom:6px}.abp .nc{text-align:right;font-family:monospace;font-size:9px}</style><div class="abp">'+s+'</div>';
+  el.innerHTML=html;
+}
+// Add analysis to rs function handling
+
+// ── Tabs (don't invalidate cache on switch) ──
+document.querySelectorAll('.tab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('act');});
+    document.querySelectorAll('.sc').forEach(function(c){c.classList.remove('act');});
+    tab.classList.add('act');
+    var sec=document.getElementById('s-'+tab.dataset.s);
+    if(sec)sec.classList.add('act');
+    rs(tab.dataset.s);
+  });
+});
+
+$('tt').addEventListener('click',function(){topOnly=!topOnly;this.classList.toggle('act');caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('mcf').addEventListener('input',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('sf').addEventListener('input',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('brf').addEventListener('click',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+
+$('bar').addEventListener('click',function(){
+  var checks=document.querySelectorAll('.chk:checked');
+  var before=rlist.length;
+  checks.forEach(function(cb){var id=cb.dataset.id;if(id&&rlist.indexOf(id)===-1)rlist.push(id);});
+  $('bex').disabled=rlist.length===0;caches={};renderRP();rs(document.querySelector('.tab.act').dataset.s);
+  msg('已加'+(rlist.length-before)+'个');
+});
+
+function renderRP(){
+  var rp=$('rp');
+  if(!rlist.length){rp.innerHTML='<p style="color:var(--text2);font-size:9px;">替换清单为空</p>';return;}
+  var items='';
+  for(var ri=0;ri<rlist.length;ri++){
+    var id=rlist[ri],row=null;
+    for(var rj=0;rj<rows.length;rj++){if(String(v(rows[rj],'user_id'))===String(id)){row=rows[rj];break;}}
+    if(!row){items+='<div class="rpi">⚠️ '+id+' <button class="rm" data-id="'+id+'">✕</button></div>';continue;}
+    var name=v(row,'昵称')||'—',g=gd(row),c=cht(row),img=v(row,'头像'),gc=g==='男'?'m':'f';
+    items+='<div class="rpi">'+(img?'<img class="av" src="'+img+'" onerror="this.style.display=\'none\'">':'<div style="width:16px;height:16px;border-radius:50%;background:#eee;"></div>')+'<strong>'+name+'</strong> <span style="font-family:monospace;font-size:8px;color:var(--text2);">'+id+'</span><span class="gb '+gc+'">'+g+'</span> <span style="font-weight:600;">'+c.toLocaleString()+'</span>人次<button class="rm" data-id="'+id+'">✕</button></div>';
+  }
+  rp.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><h3>📋 待替换 ('+rlist.length+')</h3><button id="cc" class="btn bo" style="padding:1px 4px;font-size:8px;">清空</button></div>'+items;
+  rp.querySelectorAll('.rm').forEach(function(btn){btn.addEventListener('click',function(){rlist=rlist.filter(function(i){return i!==btn.dataset.id;});$('bex').disabled=rlist.length===0;renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});});
+  var cb=rp.querySelector('#cc');if(cb)cb.addEventListener('click',function(){rlist=[];$('bex').disabled=true;renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});
+}
+
+$('bex').addEventListener('click',function(){
+  if(!rlist.length){msg('清单为空');return;}
+  var out=[];
+  for(var ri=0;ri<rlist.length;ri++){var id=rlist[ri],row=null;
+    for(var rj=0;rj<rows.length;rj++){if(String(v(rows[rj],'user_id'))===String(id)){row=rows[rj];break;}}
+    if(!row)continue;var obj={'操作类型':'替换上线'};
+    for(var hi=0;hi<SH.length;hi++){var col=SH[hi],val2=v(row,col);if(col==='性别')val2=gd(row);else if(NC[col]&&typeof val2==='number')val2=col.indexOf('率')>=0?val2.toFixed(4):val2;obj[col]=val2;}
+    out.push(obj);}
+  if(!out.length){msg('无数据');return;}
+  var ws=XLSX.utils.json_to_sheet(out);var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'替换清单');
+  XLSX.writeFile(wb,'替换清单_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  msg('📥 已导出 '+out.length+' 条');
+});
+document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();$('bex').click();}});
+})();
+</script>
+</body>
+</html>
