@@ -18,6 +18,8 @@
   header{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:6px}
   header h1{font-size:18px;font-weight:600}
   header h1 small{font-size:12px;font-weight:400;color:var(--text2);margin-left:6px}
+  .help-btn{padding:5px 10px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--text);font-size:12px;cursor:pointer}
+  .help-btn:hover{border-color:var(--primary);color:var(--primary)}
   .uz{border:2px dashed var(--border);border-radius:var(--radius);padding:22px 14px;text-align:center;background:var(--card);cursor:pointer;transition:border-color .2s;margin-bottom:7px}
   .uz:hover,.uz.dragover{border-color:var(--primary);background:#eef1ff}
   .uz .icon{font-size:28px;opacity:.5}
@@ -103,6 +105,24 @@
   .img-modal img{max-width:min(92vw,720px);max-height:86vh;object-fit:contain;border-radius:8px;background:#fff;box-shadow:0 18px 48px rgba(0,0,0,.35)}
   .img-modal .imc{position:absolute;top:12px;right:12px;width:30px;height:30px;border:none;border-radius:50%;background:rgba(255,255,255,.94);color:#1a1d29;font-size:20px;line-height:28px;cursor:pointer}
   .img-modal .imc:hover{background:#fff}
+  .help-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(12,15,28,.58);z-index:1001}
+  .help-modal.show{display:flex}
+  .help-card{width:min(640px,96vw);max-height:88vh;overflow:auto;background:var(--card);border-radius:var(--radius);box-shadow:0 18px 48px rgba(0,0,0,.28);border:1px solid var(--border)}
+  .help-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px 10px;border-bottom:1px solid var(--border)}
+  .help-head h2{font-size:18px;font-weight:650;margin:0}
+  .help-head p{font-size:12px;color:var(--text2);margin-top:4px}
+  .help-close{width:28px;height:28px;border:none;border-radius:50%;background:#f3f4f8;color:var(--text);font-size:20px;line-height:26px;cursor:pointer;flex:0 0 auto}
+  .help-close:hover{background:#e9ebf3}
+  .help-body{padding:14px 18px}
+  .help-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px}
+  .help-step{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:9px;border:1px solid var(--border);border-radius:6px;background:#fbfcff}
+  .help-step b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#eef1ff;color:var(--primary);font-size:13px}
+  .help-step strong{display:block;font-size:13px;margin-bottom:2px}
+  .help-step span{display:block;font-size:12px;color:var(--text2);line-height:1.45}
+  .help-tips{margin-top:12px;padding:10px 12px;border-radius:6px;background:#f7fbf8;border:1px solid #dcefe0;color:#335a39;font-size:12px;line-height:1.6}
+  .help-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--border)}
+  .help-ok{padding:6px 14px;border:none;border-radius:4px;background:var(--primary);color:#fff;font-size:13px;cursor:pointer}
+  .help-ok:hover{opacity:.9}
   .rp{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;max-height:320px;overflow-y:auto}
   .rp h3{font-size:13px;font-weight:600;margin-bottom:4px}
   .rpi{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
@@ -117,12 +137,12 @@
   .expc .exp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:5px 8px;max-height:126px;overflow:auto;padding-top:4px}
   .expc label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text)}
   .expc input{width:14px;height:14px}
-  @media(max-width:768px){body{padding:5px;font-size:12px}header h1{font-size:16px}.tab{font-size:12px;padding:6px 8px}td{max-width:95px}}
+  @media(max-width:768px){body{padding:5px;font-size:12px}header h1{font-size:16px}.tab{font-size:12px;padding:6px 8px}td{max-width:95px}.help-head{padding:14px}.help-body{padding:12px}.help-foot{padding:12px 14px}}
 </style>
 </head>
 <body>
 <div class="app">
-<header><h1>🍩 AI主播替换 <small>格式修复 · 排序筛选 · 音色分类</small></h1></header>
+<header><h1>🍩 AI主播替换 <small>格式修复 · 排序筛选 · 音色分类</small></h1><button class="help-btn" id="helpBtn" type="button">使用说明</button></header>
 
 <div class="uz" id="uz">
   <div class="icon">📋</div>
@@ -210,6 +230,31 @@
   <button class="imc" id="imgModalClose" type="button" aria-label="关闭预览">×</button>
   <img id="imgModalPic" alt="头像预览">
 </div>
+<div class="help-modal" id="helpModal" aria-hidden="true">
+  <div class="help-card" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-head">
+      <div>
+        <h2 id="helpTitle">快速上手</h2>
+        <p>所有数据只在浏览器本地处理，不会上传到服务器。</p>
+      </div>
+      <button class="help-close" id="helpClose" type="button" aria-label="关闭使用说明">×</button>
+    </div>
+    <div class="help-body">
+      <div class="help-steps">
+        <div class="help-step"><b>1</b><div><strong>上传 XLSX</strong><span>拖拽文件到上传区，或点击选择文件。</span></div></div>
+        <div class="help-step"><b>2</b><div><strong>筛选角色</strong><span>用性别、时段、最低聊天人数、Top≥100 等条件缩小范围。</span></div></div>
+        <div class="help-step"><b>3</b><div><strong>分页浏览</strong><span>每页 500 条，可用下一页查看 501-1000 及后续数据。</span></div></div>
+        <div class="help-step"><b>4</b><div><strong>查看分析</strong><span>分析页会展示热门题材、标签和性别偏好图表。</span></div></div>
+        <div class="help-step"><b>5</b><div><strong>加入清单</strong><span>勾选目标角色后，点击“添加至清单”。头像可以点击放大。</span></div></div>
+        <div class="help-step"><b>6</b><div><strong>导出 XLSX</strong><span>在清单页选择需要导出的字段，再点击导出。</span></div></div>
+      </div>
+      <div class="help-tips">常用导出：如果只需要 UID 和图片链接，清单页默认已选择 user_id 与头像 URL。</div>
+    </div>
+    <div class="help-foot">
+      <button class="help-ok" id="helpOk" type="button">知道了</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -233,6 +278,12 @@ var PAGE_SIZE=500,pageBySection={};
 var $=function(id){return document.getElementById(id);};
 var T=$('toast'),tm=null;
 function msg(s,d){T.textContent=s;T.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){T.classList.remove('show');},d||1500);}
+var HELP_KEY='topRolesToolHelpSeenV2';
+var HM=$('helpModal'),HMB=$('helpBtn'),HMC=$('helpClose'),HMO=$('helpOk');
+function hasSeenHelp(){try{return localStorage.getItem(HELP_KEY)==='1';}catch(e){return false;}}
+function markHelpSeen(){try{localStorage.setItem(HELP_KEY,'1');}catch(e){}}
+function showHelp(){HM.classList.add('show');HM.setAttribute('aria-hidden','false');}
+function hideHelp(mark){HM.classList.remove('show');HM.setAttribute('aria-hidden','true');if(mark)markHelpSeen();}
 var IM=$('imgModal'),IMP=$('imgModalPic'),IMC=$('imgModalClose');
 function showImg(src){if(!src)return;IMP.src=src;IM.classList.add('show');IM.setAttribute('aria-hidden','false');}
 function hideImg(){IM.classList.remove('show');IM.setAttribute('aria-hidden','true');IMP.removeAttribute('src');}
@@ -241,6 +292,12 @@ function activeSection(){var t=document.querySelector('.tab.act');return t?t.dat
 function resetPages(){pageBySection={};}
 function resetActivePage(){pageBySection[activeSection()]=0;}
 function renderCurrent(reset){if(reset)resetPages();if(ready)rs(activeSection());}
+
+HMB.addEventListener('click',function(){showHelp();});
+HMC.addEventListener('click',function(){hideHelp(true);});
+HMO.addEventListener('click',function(){hideHelp(true);});
+HM.addEventListener('click',function(e){if(e.target===HM)hideHelp(true);});
+setTimeout(function(){if(!hasSeenHelp())showHelp();},250);
 
 $('ub').addEventListener('click',function(){$('fi').click();});
 $('uz').addEventListener('click',function(e){if(e.target!==$('ub'))$('fi').click();});
@@ -253,7 +310,7 @@ document.addEventListener('click',function(e){
   if(img&&img.src){e.preventDefault();e.stopPropagation();showImg(img.src);return;}
   if(e.target===IM||e.target===IMC)hideImg();
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&IM.classList.contains('show'))hideImg();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&IM.classList.contains('show'))hideImg();else if(e.key==='Escape'&&HM.classList.contains('show'))hideHelp(true);});
 
 function pg(s,d,p){$('ps').textContent=s;$('pd').textContent=d||'';if(p!==undefined)$('pb').style.width=p+'%';$('prog').style.display='block';}
 function hp(){$('prog').style.display='none';}
