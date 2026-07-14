@@ -10,91 +10,114 @@
     --bg: #f4f5f9; --card: #fff; --text: #1a1d29; --text2: #6b7094;
     --border: #e2e4eb; --primary: #4f6ef7; --success: #34c759;
     --male: #4f6ef7; --female: #ff6b9d; --radius: 8px; --fixed-bg: #e8f5e9;
+    --chart3:#f59e0b; --chart4:#8b5cf6; --chart5:#14b8a6;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:10px}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:12px;font-size:13px}
   .app{max-width:100%;margin:0 auto}
-  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:3px}
-  header h1{font-size:14px;font-weight:600}
-  header h1 small{font-size:9px;font-weight:400;color:var(--text2);margin-left:3px}
-  .uz{border:2px dashed var(--border);border-radius:var(--radius);padding:16px 10px;text-align:center;background:var(--card);cursor:pointer;transition:border-color .2s;margin-bottom:5px}
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:6px}
+  header h1{font-size:18px;font-weight:600}
+  header h1 small{font-size:12px;font-weight:400;color:var(--text2);margin-left:6px}
+  .uz{border:2px dashed var(--border);border-radius:var(--radius);padding:22px 14px;text-align:center;background:var(--card);cursor:pointer;transition:border-color .2s;margin-bottom:7px}
   .uz:hover,.uz.dragover{border-color:var(--primary);background:#eef1ff}
-  .uz .icon{font-size:20px;opacity:.5}
-  .uz p{color:var(--text2);font-size:10px;margin:2px 0}
-  .uz .btn{padding:4px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer}
+  .uz .icon{font-size:28px;opacity:.5}
+  .uz p{color:var(--text2);font-size:13px;margin:4px 0}
+  .uz .btn{padding:6px 14px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer}
   #fi{display:none}
   .prog{display:none;text-align:center;padding:20px 10px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
   .prog .spin{display:inline-block;width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:s .7s linear infinite;margin-bottom:4px}
   @keyframes s{to{transform:rotate(360deg)}}
-  .prog .step{font-size:12px;font-weight:500}
-  .prog .det{font-size:9px;color:var(--text2)}
+  .prog .step{font-size:14px;font-weight:500}
+  .prog .det{font-size:12px;color:var(--text2)}
   .prog .barw{width:40%;max-width:200px;height:4px;background:var(--border);border-radius:3px;margin:6px auto 0;overflow:hidden}
   .prog .barf{height:100%;width:0;background:var(--primary);border-radius:3px;transition:width .3s}
-  .cfg{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px;margin-bottom:4px;display:none}
-  .cfg h3{font-size:10px;font-weight:600;margin-bottom:2px;color:var(--text)}
-  .cfg-row{display:flex;flex-wrap:wrap;gap:3px 8px;align-items:center}
-  .cfg-row label{font-size:9px;color:var(--text2);display:flex;align-items:center;gap:2px}
-  .cfg-row select,.cfg-row input{padding:2px 3px;border:1px solid var(--border);border-radius:3px;font-size:9px;background:#fff}
-  .cfg-row textarea{padding:2px 3px;border:1px solid var(--border);border-radius:3px;font-size:9px;font-family:monospace;resize:vertical;height:30px;width:160px}
-  .cfg .btn{padding:2px 6px;border-radius:3px;font-size:9px;border:1px solid var(--border);background:#fff;cursor:pointer}
+  .cfg{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;margin-bottom:6px;display:none}
+  .cfg h3{font-size:13px;font-weight:600;margin-bottom:5px;color:var(--text)}
+  .cfg-row{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+  .cfg-row label{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+  .cfg-row select,.cfg-row input{padding:4px 6px;border:1px solid var(--border);border-radius:3px;font-size:12px;background:#fff}
+  .cfg-row textarea{padding:4px 6px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-family:monospace;resize:vertical;height:42px;width:200px}
+  .cfg .btn{padding:4px 8px;border-radius:3px;font-size:12px;border:1px solid var(--border);background:#fff;cursor:pointer}
   .cfg .btn:hover{border-color:var(--primary);color:var(--primary)}
-  .sum{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;display:none;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:4px}
-  .sum .st{display:flex;flex-direction:column;min-width:40px}
-  .sum .st .nm{font-size:12px;font-weight:700}
-  .sum .st .lb{font-size:8px;color:var(--text2)}
+  .sum{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:7px 10px;display:none;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:6px}
+  .sum .st{display:flex;flex-direction:column;min-width:56px}
+  .sum .st .nm{font-size:17px;font-weight:700}
+  .sum .st .lb{font-size:11px;color:var(--text2)}
   .sum .st.m .nm{color:var(--male)}.sum .st.f .nm{color:var(--female)}
   .sum .st.fx .nm{color:var(--success)}.sum .st.tp .nm{color:var(--primary)}
-  .fxr{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;display:none;margin-bottom:4px}
-  .fxr h3{font-size:9px;font-weight:600}
-  .fxr .fxg{display:flex;flex-wrap:wrap;gap:2px}
-  .fxr .fxi{font-size:8px;padding:2px 5px;border-radius:3px;background:var(--fixed-bg)}
+  .fxr{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:7px 10px;display:none;margin-bottom:6px}
+  .fxr h3{font-size:12px;font-weight:600}
+  .fxr .fxg{display:flex;flex-wrap:wrap;gap:4px}
+  .fxr .fxi{font-size:11px;padding:3px 7px;border-radius:3px;background:var(--fixed-bg)}
   .fxr .fxi .lb{font-weight:600;color:var(--success)}
   .tabs{display:flex;gap:0;border-bottom:2px solid var(--border);overflow-x:auto;background:var(--card);border-radius:var(--radius) var(--radius) 0 0}
-  .tab{padding:4px 7px;font-size:10px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2);white-space:nowrap;transition:all .12s}
+  .tab{padding:7px 10px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--text2);white-space:nowrap;transition:all .12s}
   .tab:hover{color:var(--text)}.tab.act{color:var(--primary);border-bottom-color:var(--primary)}
   .sc{display:none}.sc.act{display:block}
-  .flt{display:flex;flex-wrap:wrap;gap:3px;align-items:center;background:var(--card);padding:3px 5px;border:1px solid var(--border);border-top:none}
-  .flt label,.flt span{font-size:9px;color:var(--text2);display:flex;align-items:center;gap:2px}
-  .flt input{padding:1px 3px;border:1px solid var(--border);border-radius:2px;font-size:9px}
-  .flt input[type=number]{width:36px}.flt input[type=text]{width:70px}
-  .flt .tag{padding:1px 5px;border-radius:6px;font-size:8px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;transition:all .12s}
+  .flt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--card);padding:6px 8px;border:1px solid var(--border);border-top:none}
+  .flt label,.flt span{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+  .flt input{padding:3px 5px;border:1px solid var(--border);border-radius:2px;font-size:12px}
+  .flt input[type=number]{width:56px}.flt input[type=text]{width:96px}
+  .flt .tag{padding:3px 8px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:#fff;transition:all .12s}
   .flt .tag.act{background:var(--success);color:#fff;border-color:var(--success)}
-  .tw{background:var(--card);border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:auto;max-height:calc(100vh - 260px)}
-  table{width:100%;border-collapse:collapse;font-size:9px}
+  .pager{display:none;flex-wrap:wrap;gap:6px;align-items:center;justify-content:flex-end;background:var(--card);padding:6px 8px;border:1px solid var(--border);border-top:none;color:var(--text2);font-size:12px}
+  .pager .pgbtn{padding:4px 9px;border:1px solid var(--border);border-radius:3px;background:#fff;color:var(--text);font-size:12px;cursor:pointer}
+  .pager .pgbtn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+  .pager .pgbtn:disabled{opacity:.4;cursor:not-allowed}
+  .pager .pgi{font-family:monospace;color:var(--text);min-width:190px;text-align:center}
+  .tw{background:var(--card);border:1px solid var(--border);border-radius:0 0 var(--radius) var(--radius);overflow:auto;max-height:calc(100vh - 300px);padding-right:12px;scrollbar-gutter:stable}
+  table{width:100%;border-collapse:collapse;font-size:12px}
   thead{background:#f8f9fe}
-  th{padding:2px 3px;text-align:left;font-weight:600;white-space:nowrap;border-bottom:1px solid var(--border);position:sticky;top:0;background:#f8f9fe;z-index:2;font-size:8px}
-  th.cf{background:#e8f5e9}th.cf::after{content:" ✓";color:var(--success);font-size:7px}
-  td{padding:2px 3px;border-bottom:1px solid var(--border);vertical-align:middle;max-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  th{padding:5px 6px;text-align:left;font-weight:600;white-space:nowrap;border-bottom:1px solid var(--border);position:sticky;top:0;background:#f8f9fe;z-index:2;font-size:11px}
+  th.cf{background:#e8f5e9}th.cf::after{content:" ✓";color:var(--success);font-size:10px}
+  td{padding:5px 6px;border-bottom:1px solid var(--border);vertical-align:middle;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   tr:hover td{background:#f8f9fe}
   tr.tr-top td{background:#f0f7f0}tr.tr-dup td{background:#fffbe6}tr.tr-live td{background:#fff0f0}
-  td .av{width:16px;height:16px;border-radius:50%;object-fit:cover;background:#eee;vertical-align:middle}
-  td .gb{display:inline-block;padding:1px 3px;border-radius:3px;font-size:8px;font-weight:600}
+  .av{width:24px;height:24px;border-radius:50%;object-fit:cover;background:#eee;vertical-align:middle;cursor:zoom-in;transition:transform .12s,box-shadow .12s}
+  .av:hover{transform:scale(1.18);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--primary)}
+  td .gb,.gb{display:inline-block;padding:2px 5px;border-radius:3px;font-size:11px;font-weight:600}
   .gb.m{background:#eef1ff;color:var(--male)}.gb.f{background:#fff0f5;color:var(--female)}
-  td .nc{text-align:right;font-family:monospace;font-size:9px}
+  td .nc{text-align:right;font-family:monospace;font-size:12px}
   td .fc{color:var(--success);font-weight:600}td .ec{color:#ccc}
-  .chk{width:10px;height:10px;cursor:pointer;vertical-align:middle}
-  .badge{display:inline-block;padding:1px 3px;border-radius:2px;font-size:7px;font-weight:600;line-height:1.2}
+  .chk{width:14px;height:14px;cursor:pointer;vertical-align:middle}
+  th.selcol,td.selcol{width:58px;min-width:58px;text-align:center;padding-right:18px}
+  .badge{display:inline-block;padding:2px 5px;border-radius:2px;font-size:10px;font-weight:600;line-height:1.2}
   .badge-live{background:#ffe0e0;color:#d32f2f}
   .badge-dup{background:#fff3e0;color:#e65100}
   .badge-hot{background:#e3f2fd;color:#1565c0}
   .badge-old{background:#e8f5e9;color:#2e7d32}
   .badge-ok{background:#f3e5f5;color:#7b1fa2}
   .badge-newvoice{background:#fce4ec;color:#c62828}
-  .legend{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 8px;margin-top:4px;display:flex;flex-wrap:wrap;gap:3px 10px;font-size:8px;color:var(--text2);align-items:center}
+  .legend{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:7px 10px;margin-top:6px;display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11px;color:var(--text2);align-items:center}
   .legend span{display:inline-flex;align-items:center;gap:2px}
-  .act{display:flex;gap:3px;justify-content:flex-end;align-items:center;margin-top:4px;flex-wrap:wrap}
-  .act .btn{padding:2px 6px;border:none;border-radius:3px;font-size:9px;cursor:pointer;transition:opacity .12s}
+  .act{display:flex;gap:6px;justify-content:flex-end;align-items:center;margin-top:6px;flex-wrap:wrap}
+  .act .btn{padding:5px 10px;border:none;border-radius:3px;font-size:12px;cursor:pointer;transition:opacity .12s}
   .act .btn:hover{opacity:.8}.act .bp{background:var(--primary);color:#fff}
   .act .bs{background:var(--success);color:#fff}
   .act .bo{background:transparent;border:1px solid var(--border);color:var(--text)}
   .act .btn:disabled{opacity:.35;cursor:not-allowed}
-  .toast{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:#1a1d29;color:#fff;padding:4px 12px;border-radius:4px;font-size:9px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999}
+  .toast{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#1a1d29;color:#fff;padding:7px 14px;border-radius:4px;font-size:12px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999}
   .toast.show{opacity:1}
-  .rp{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px 6px;max-height:260px;overflow-y:auto}
-  .rp h3{font-size:9px;font-weight:600;margin-bottom:2px}
-  .rpi{display:flex;align-items:center;gap:3px;padding:2px 0;border-bottom:1px solid var(--border);font-size:9px}
-  .rpi .rm{background:none;border:none;color:#ff3b30;cursor:pointer;font-size:8px;margin-left:auto;padding:1px 2px}
-  @media(max-width:768px){body{padding:3px}header h1{font-size:12px}}
+  .img-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(12,15,28,.76);z-index:1000}
+  .img-modal.show{display:flex}
+  .img-modal img{max-width:min(92vw,720px);max-height:86vh;object-fit:contain;border-radius:8px;background:#fff;box-shadow:0 18px 48px rgba(0,0,0,.35)}
+  .img-modal .imc{position:absolute;top:12px;right:12px;width:30px;height:30px;border:none;border-radius:50%;background:rgba(255,255,255,.94);color:#1a1d29;font-size:20px;line-height:28px;cursor:pointer}
+  .img-modal .imc:hover{background:#fff}
+  .rp{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;max-height:320px;overflow-y:auto}
+  .rp h3{font-size:13px;font-weight:600;margin-bottom:4px}
+  .rpi{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+  .rpi .rm{background:none;border:none;color:#ff3b30;cursor:pointer;font-size:12px;margin-left:auto;padding:2px 4px}
+  .expc{border:1px solid var(--border);border-radius:var(--radius);padding:8px;margin:6px 0;background:#fbfcff}
+  .expc .exp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .expc .exp-title{font-size:13px;font-weight:600}
+  .expc .exp-note{font-size:11px;color:var(--text2);font-weight:400;margin-left:6px}
+  .expc .exp-actions{display:flex;flex-wrap:wrap;gap:5px}
+  .expc .exp-btn{padding:3px 7px;border:1px solid var(--border);border-radius:3px;background:#fff;color:var(--text);font-size:11px;cursor:pointer}
+  .expc .exp-btn:hover{border-color:var(--primary);color:var(--primary)}
+  .expc .exp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:5px 8px;max-height:126px;overflow:auto;padding-top:4px}
+  .expc label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text)}
+  .expc input{width:14px;height:14px}
+  @media(max-width:768px){body{padding:5px;font-size:12px}header h1{font-size:16px}.tab{font-size:12px;padding:6px 8px}td{max-width:95px}}
 </style>
 </head>
 <body>
@@ -156,6 +179,13 @@
     <div class="tag" id="tt">🏆 Top≥100</div>
     <span style="margin-left:auto"><span id="rc">0</span>/<span id="tc">0</span></span>
   </div>
+  <div class="pager" id="pager">
+    <button class="pgbtn" id="pgFirst" type="button">首页</button>
+    <button class="pgbtn" id="pgPrev" type="button">上一页</button>
+    <span class="pgi" id="pgInfo">0 / 0</span>
+    <button class="pgbtn" id="pgNext" type="button">下一页</button>
+    <button class="pgbtn" id="pgLast" type="button">末页</button>
+  </div>
 
   <div class="sc act" id="s-all"><div class="tw"><table><thead id="th-all"></thead><tbody id="tb-all"></tbody></table></div></div>
   <div class="sc" id="s-male"><div class="tw"><table><thead id="th-male"></thead><tbody id="tb-male"></tbody></table></div></div>
@@ -176,24 +206,41 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<div class="img-modal" id="imgModal" aria-hidden="true">
+  <button class="imc" id="imgModalClose" type="button" aria-label="关闭预览">×</button>
+  <img id="imgModalPic" alt="头像预览">
+</div>
 
 <script>
 (function(){
 'use strict';
 var H=['user_id','昵称','角色类型','性别','头像','tag','角色创建时间','创建者id','创建者注册时间','创作者性别','总聊天人数','深度聊天用户数【一天内有过聊天>10轮的用户】','总深度聊天率','女性聊天人数','女性深度聊天用户数【一天内聊天>10轮的用户】','女性深度聊天率','男性聊天人数','男性深度聊天用户数【一天内聊天>10轮的用户】','男性深度聊天率','角色简介','角色设定','开场白','开场白声音','voice_id','角色性格','说话风格','关系故事'];
 var SH=['user_id','昵称','角色类型','性别','头像','tag','角色创建时间','总聊天人数','voice_id','角色简介','角色性格'];
+var REQUIRED=['user_id','性别','角色创建时间','总聊天人数'];
+var EXPORT_FIELDS=['操作类型'].concat(H);
 var NC={};H.forEach(function(h){if(/人数|率/.test(h)&&h!=='角色类型')NC[h]=true;});
 
 var rows=[],cmap=[],fixs={},rlist=[],topOnly=false,ready=false;
+var missingCols=[];
 var liveSet={},dupSet={};
+var exportCols=['user_id','头像'];
 var periodDays=0,periodExclude=false; // 时段过滤
 
 var caches={};
 var curSec='fixed';
+var PAGE_SIZE=500,pageBySection={};
 
 var $=function(id){return document.getElementById(id);};
 var T=$('toast'),tm=null;
 function msg(s,d){T.textContent=s;T.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){T.classList.remove('show');},d||1500);}
+var IM=$('imgModal'),IMP=$('imgModalPic'),IMC=$('imgModalClose');
+function showImg(src){if(!src)return;IMP.src=src;IM.classList.add('show');IM.setAttribute('aria-hidden','false');}
+function hideImg(){IM.classList.remove('show');IM.setAttribute('aria-hidden','true');IMP.removeAttribute('src');}
+IMP.onerror=function(){hideImg();msg('图片加载失败');};
+function activeSection(){var t=document.querySelector('.tab.act');return t?t.dataset.s:'all';}
+function resetPages(){pageBySection={};}
+function resetActivePage(){pageBySection[activeSection()]=0;}
+function renderCurrent(reset){if(reset)resetPages();if(ready)rs(activeSection());}
 
 $('ub').addEventListener('click',function(){$('fi').click();});
 $('uz').addEventListener('click',function(e){if(e.target!==$('ub'))$('fi').click();});
@@ -201,6 +248,12 @@ $('fi').addEventListener('change',function(e){if(e.target.files[0])loadF(e.targe
 ['dragover','dragenter'].forEach(function(e){$('uz').addEventListener(e,function(ev){ev.preventDefault();$('uz').classList.add('dragover');});});
 ['dragleave','drop'].forEach(function(e){$('uz').addEventListener(e,function(ev){ev.preventDefault();$('uz').classList.remove('dragover');});});
 $('uz').addEventListener('drop',function(e){if(e.dataTransfer.files[0])loadF(e.dataTransfer.files[0]);});
+document.addEventListener('click',function(e){
+  var img=e.target.closest?e.target.closest('img.av'):null;
+  if(img&&img.src){e.preventDefault();e.stopPropagation();showImg(img.src);return;}
+  if(e.target===IM||e.target===IMC)hideImg();
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&IM.classList.contains('show'))hideImg();});
 
 function pg(s,d,p){$('ps').textContent=s;$('pd').textContent=d||'';if(p!==undefined)$('pb').style.width=p+'%';$('prog').style.display='block';}
 function hp(){$('prog').style.display='none';}
@@ -209,8 +262,8 @@ function loadF(file){
   if(!file.name.match(/\.xlsx?$/i)){msg('请上传 .xlsx 文件');return;}
   var mb=file.size/1024/1024;
   if(mb>500){msg('文件超过 500MB');return;}
-  if(mb>200)msg('⚠️ 超过 200MB');
-  rows=[];cmap=[];fixs={};rlist=[];topOnly=false;ready=false;liveSet={};dupSet={};caches={};
+  if(mb>200)msg('⚠️ 文件超过 200MB，处理可能较慢',3000);
+  rows=[];cmap=[];fixs={};missingCols=[];rlist=[];topOnly=false;ready=false;liveSet={};dupSet={};exportCols=['user_id','头像'];caches={};resetPages();
   $('mc').style.display='none';$('sum').style.display='none';$('fxr').style.display='none';$('cfg').style.display='none';$('uz').style.display='none';
   pg('读取...',mb.toFixed(1)+' MB',0);
   setTimeout(function(){
@@ -229,6 +282,7 @@ function loadF(file){
               var rh=hj[0]?hj[0].map(function(h){return String(h).trim();}):[];
               var hl={};H.forEach(function(h){hl[h.toLowerCase().replace(/[\s\-_【】]/g,'')]=h;});
               cmap=rh.map(function(r){return hl[r.toLowerCase().replace(/[\s\-_【】]/g,'')]||r;});
+              missingCols=REQUIRED.filter(function(col){return cmap.indexOf(col)===-1;});
               var cr=1;
               (function rb(){var er=Math.min(cr+B-1,ref.e.r);
                 try{var batch=XLSX.utils.sheet_to_json(ws,{header:1,range:{s:{r:cr,c:0},e:{r:er,c:ref.e.c}},defval:''});
@@ -263,17 +317,28 @@ function done(){
   var fk=Object.keys(fixs);
   $('sum').style.display='flex';
   $('sum').innerHTML='<div class="st"><div class="nm">'+rows.length.toLocaleString()+'</div><div class="lb">总角色</div></div><div class="st m"><div class="nm">'+m.toLocaleString()+'</div><div class="lb">男</div></div><div class="st f"><div class="nm">'+f.toLocaleString()+'</div><div class="lb">女</div></div><div class="st tp"><div class="nm">'+tc.toLocaleString()+'</div><div class="lb">Top(≥100)</div></div><div class="st fx" style="margin-left:auto"><div class="nm">'+fk.length+'</div><div class="lb">修复列</div></div>';
-  if(fk.length){$('fxr').style.display='block';var h='<h3>🔧 数值格式已修复：</h3><div class="fxg">';for(var ki=0;ki<fk.length;ki++){var s=fixs[fk[ki]];h+='<div class="fxi"><span class="lb">'+fk[ki]+'</span> <span class="sm">'+s.fixed.toLocaleString()+'条'+(s.examples.length?' 例:'+s.examples.join(','):'')+'</span></div>';}h+='</div>';$('fxr').innerHTML=h;}
+  if(fk.length||missingCols.length){$('fxr').style.display='block';var h='';
+    if(missingCols.length){h+='<h3>⚠️ 缺少关键字段：</h3><div class="fxg"><div class="fxi" style="background:#fff3e0;color:#8a4b00"><span class="lb" style="color:#8a4b00">'+missingCols.join('、')+'</span> <span class="sm">相关筛选或统计可能不完整</span></div></div>';}
+    if(fk.length){h+='<h3>🔧 数值格式已修复：</h3><div class="fxg">';for(var ki=0;ki<fk.length;ki++){var s=fixs[fk[ki]];h+='<div class="fxi"><span class="lb">'+fk[ki]+'</span> <span class="sm">'+s.fixed.toLocaleString()+'条'+(s.examples.length?' 例:'+s.examples.join(','):'')+'</span></div>';}h+='</div>';}
+    $('fxr').innerHTML=h;}
   $('tc').textContent=rows.length.toLocaleString();hp();$('cfg').style.display='block';$('mc').style.display='block';
-  rs('all');msg('✅ 已加载 '+rows.length.toLocaleString()+' 条');
+  rs('all');if(missingCols.length)msg('⚠️ 缺少关键字段: '+missingCols.join('、'),3500);else msg('✅ 已加载 '+rows.length.toLocaleString()+' 条');
 }
 
 function v(row,col){var x=row[col];return(x!==undefined&&x!==null)?x:'';}
 function cht(row){var x=v(row,'总聊天人数');return typeof x==='number'?x:0;}
 function gd(row){var g=String(v(row,'性别')).trim().toLowerCase();if(/^(male|男|男生|1)$/.test(g))return '男';if(/^(female|女|女生|2)$/.test(g))return '女';return g||'未知';}
 function isTR(r){return cht(r)>=100;}
-function dt(r){return v(row,'角色创建时间');}
-function parseDate(d){if(!d)return null;var p=d.split('-');if(p.length!==3)return null;return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));}
+function dt(r){return vt(r);}
+function parseDate(d){
+  if(!d)return null;
+  if(d instanceof Date&&!isNaN(d))return d;
+  if(typeof d==='number'){var ed=new Date(Math.round((d-25569)*864e5));return isNaN(ed)?null:ed;}
+  var s=String(d).trim().replace(/[/.]/g,'-');
+  var m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(!m)return null;
+  return new Date(parseInt(m[1],10),parseInt(m[2],10)-1,parseInt(m[3],10));
+}
 function daysAgo(n){var d=new Date();d.setDate(d.getDate()-n);return d;}
 function isLive(r){return liveSet[String(v(r,'user_id'))]?true:false;}
 function isDup(r){return dupSet[String(v(r,'user_id'))]?true:false;}
@@ -307,16 +372,16 @@ $('periodSel').addEventListener('change',function(){
   if(v==='all'){periodDays=0;$('dateLabel').style.display='none';}
   else if(v==='custom'){periodDays=0;$('dateLabel').style.display='inline-flex';}
   else{periodDays=parseInt(v);$('dateLabel').style.display='none';}
-  caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);
+  caches={};renderCurrent(true);
 });
-$('periodExclude').addEventListener('change',function(){periodExclude=this.checked;caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
-$('dateFrom').addEventListener('change',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
-$('dateTo').addEventListener('change',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('periodExclude').addEventListener('change',function(){periodExclude=this.checked;caches={};renderCurrent(true);});
+$('dateFrom').addEventListener('change',function(){caches={};renderCurrent(true);});
+$('dateTo').addEventListener('change',function(){caches={};renderCurrent(true);});
 
 $('btnApplyExclude').addEventListener('click',function(){
   var txt=$('liveUids').value.trim();liveSet={};
   if(txt){txt.split('\n').forEach(function(l){l=l.trim();if(l)liveSet[l]=true;});}
-  $('liveCount').textContent=Object.keys(liveSet).length+'个';caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);
+  $('liveCount').textContent=Object.keys(liveSet).length+'个';caches={};renderCurrent(true);
 });
 
 $('btnDedupAvatars').addEventListener('click',function(){
@@ -327,7 +392,7 @@ $('btnDedupAvatars').addEventListener('click',function(){
     var total=cand.length,loaded=0,hashes={};
     function next(i){
       if(i>=total){dupSet={};var dc=0;for(var h in hashes){if(hashes[h].length>1){for(var j=1;j<hashes[h].length;j++){dupSet[String(v(hashes[h][j],'user_id'))]=true;dc++;}}}
-        st.textContent='✅ 重复:'+dc+' ('+total+'个)';btn.disabled=false;caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);return;}
+        st.textContent='✅ 重复:'+dc+' ('+total+'个)';btn.disabled=false;caches={};renderCurrent(true);return;}
       var row=cand[i],img=new Image();img.crossOrigin='anonymous';
       img.onload=function(){try{var cvs=document.createElement('canvas');cvs.width=8;cvs.height=8;var ctx=cvs.getContext('2d');ctx.drawImage(img,0,0,8,8);var d=ctx.getImageData(0,0,8,8).data,sum=0;for(var k=0;k<64;k++)sum+=d[k*4]+d[k*4+1]+d[k*4+2];var avg=sum/192,hash='';for(var k=0;k<64;k++)hash+=d[k*4]+d[k*4+1]+d[k*4+2]>avg?'1':'0';if(!hashes[hash])hashes[hash]=[];hashes[hash].push(row);}catch(e){}loaded++;if(loaded%10===0)st.textContent='扫描:'+loaded+'/'+total;next(i+1);};
       img.onerror=function(){loaded++;next(i+1);};img.src=v(row,'头像');
@@ -337,7 +402,8 @@ $('btnDedupAvatars').addEventListener('click',function(){
 
 // ── Data fetching (with caching) ──
 function getC(section){
-  var ck=section+'_p'+periodDays+'x'+(periodExclude?1:0)+'_m'+($('mcf').value||'0')+'_s'+($('sf').value||'')+'_t'+(topOnly?1:0)+'_l'+Object.keys(liveSet).length+'_d'+Object.keys(dupSet).length+'_f'+($('dateFrom').value||'')+'_t'+($('dateTo').value||'');
+  var periodMode=$('periodSel').value;
+  var ck=section+'_mode'+periodMode+'_p'+periodDays+'x'+(periodExclude?1:0)+'_m'+($('mcf').value||'0')+'_s'+($('sf').value||'')+'_t'+(topOnly?1:0)+'_l'+Object.keys(liveSet).length+'_d'+Object.keys(dupSet).length+'_f'+($('dateFrom').value||'')+'_to'+($('dateTo').value||'');
   if(caches[ck])return caches[ck];
 
   var data=[];
@@ -347,6 +413,7 @@ function getC(section){
   var dTo=$('dateTo').value?parseDate($('dateTo').value):null;
   if(dTo)dTo.setHours(23,59,59,999);
   var usePeriod=(section!=='fixed'&&section!=='newvoice');
+  var useCustomPeriod=usePeriod&&periodMode==='custom'&&(dFrom||dTo);
 
   for(var i=0;i<rows.length;i++){
     var r=rows[i],c=cht(r);
@@ -356,7 +423,11 @@ function getC(section){
     if(section==='male'&&gd(r)!=='男')continue;
     if(section==='female'&&gd(r)!=='女')continue;
     if(section==='newvoice'&&!isNewVoice(r))continue;
-    if(usePeriod&&!inPeriod(r))continue;
+    if(useCustomPeriod){
+      var pd=parseDate(vt(r));if(!pd)continue;
+      var inside=(!dFrom||pd>=dFrom)&&(!dTo||pd<=dTo);
+      if(periodExclude?inside:!inside)continue;
+    }else if(usePeriod&&!inPeriod(r))continue;
     data.push(r);
   }
   data.sort(function(a,b){return cht(b)-cht(a);});
@@ -366,25 +437,56 @@ function getC(section){
 
 function getCols(s){return SH;}
 
+function updatePager(section,total,start,end,page,totalPages){
+  var pager=$('pager');
+  if(!pager)return;
+  if(section==='analysis'||section==='replace'){pager.style.display='none';return;}
+  pager.style.display='flex';
+  $('pgInfo').textContent=total?((start+1).toLocaleString()+'-'+end.toLocaleString()+' / '+total.toLocaleString()+' · 第 '+(page+1)+'/'+totalPages+' 页'):'0 / 0';
+  $('pgFirst').disabled=page<=0||totalPages<=1;
+  $('pgPrev').disabled=page<=0||totalPages<=1;
+  $('pgNext').disabled=page>=totalPages-1||totalPages<=1;
+  $('pgLast').disabled=page>=totalPages-1||totalPages<=1;
+}
+
+function goPage(mode){
+  var sec=activeSection();
+  if(sec==='analysis'||sec==='replace'||!ready)return;
+  var total=getC(sec).length,totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  var page=pageBySection[sec]||0;
+  if(mode==='first')page=0;
+  else if(mode==='prev')page=Math.max(0,page-1);
+  else if(mode==='next')page=Math.min(totalPages-1,page+1);
+  else if(mode==='last')page=totalPages-1;
+  pageBySection[sec]=page;
+  rs(sec);
+}
+
 function rs(section){
   if(!ready)return;
   curSec=section;
-  if(section==='analysis'){renderAnalysis();return;}
+  if(section==='analysis'){updatePager(section,0,0,0,0,1);renderAnalysis();return;}
+  if(section==='replace'){updatePager(section,0,0,0,0,1);renderRP();return;}
   var tb=document.getElementById('tb-'+section),th=document.getElementById('th-'+section);
-  if(!tb||!th)return;
+  if(!tb||!th){updatePager(section,0,0,0,0,1);return;}
   var data=getC(section),cols=getCols(section);
   var showCheck=(section!=='replace');
   var repSet={};for(var ri=0;ri<rlist.length;ri++)repSet[rlist[ri]]=true;
 
-  var hh='<tr><th style="width:14px;text-align:center;">#</th><th style="width:18px;">图</th>';
+  var hh='<tr><th style="width:46px;text-align:center;">#</th><th style="width:36px;">图</th>';
   for(var hi=0;hi<cols.length;hi++){var col=cols[hi];hh+='<th class="'+(fixs[col]?'cf':'')+'">'+col+'</th>';}
   hh+='<th style="width:44px;">状态</th>';
-  if(showCheck)hh+='<th style="text-align:center;width:18px;">✓</th>';
+  if(showCheck)hh+='<th class="selcol">✓</th>';
   hh+='</tr>';th.innerHTML=hh;
 
-  var LIM=500;
-  var disp=data,ttl=data.length;
-  if(data.length>LIM)disp=data.slice(0,LIM);
+  var ttl=data.length,totalPages=Math.max(1,Math.ceil(ttl/PAGE_SIZE));
+  var page=pageBySection[section]||0;
+  if(page>=totalPages)page=totalPages-1;
+  if(page<0)page=0;
+  pageBySection[section]=page;
+  var start=page*PAGE_SIZE,end=Math.min(start+PAGE_SIZE,ttl);
+  var disp=data.slice(start,end);
+  updatePager(section,ttl,start,end,page,totalPages);
 
   var body='';
   for(var di=0;di<disp.length;di++){
@@ -395,7 +497,7 @@ function rs(section){
     var rc='';
     if(st.indexOf('live')>=0)rc='tr-live';else if(st.indexOf('dup')>=0)rc='tr-dup';else if(top)rc='tr-top';
     body+='<tr class="'+rc+'">';
-    body+='<td style="text-align:center;color:var(--text2);font-weight:600;">'+(di+1)+'</td>';
+    body+='<td style="text-align:center;color:var(--text2);font-weight:600;">'+(start+di+1)+'</td>';
     body+='<td>'+(img?'<img class="av" src="'+img+'" onerror="this.style.display=\'none\'">':'—')+'</td>';
     for(var hi2=0;hi2<cols.length;hi2++){
       var col2=cols[hi2],val2=v(row,col2);
@@ -411,10 +513,10 @@ function rs(section){
     if(st.indexOf('established')>=0)badges.push('<span class="badge badge-old">⭐沉淀</span>');
     if(st.indexOf('ok')>=0&&!badges.length)badges.push('<span class="badge badge-ok">🟢可替</span>');
     body+='<td>'+(badges.join(' ')||'<span style="color:var(--text2);font-size:7px;">—</span>')+'</td>';
-    if(showCheck)body+='<td style="text-align:center;"><input type="checkbox" class="chk" data-id="'+id+'"'+(checked?' checked':'')+'></td>';
+    if(showCheck)body+='<td class="selcol"><input type="checkbox" class="chk" data-id="'+id+'"'+(checked?' checked':'')+'></td>';
     body+='</tr>';
   }
-  if(!disp.length)body='<tr><td colspan="30" style="text-align:center;padding:10px;color:var(--text2);font-size:9px;">没有匹配的数据。可在配置中调整时段筛选范围。</td></tr>';
+  if(!disp.length)body='<tr><td colspan="30" style="text-align:center;padding:10px;color:var(--text2);font-size:12px;">没有匹配的数据。可在配置中调整时段筛选范围。</td></tr>';
   tb.innerHTML=body;
   var note=ttl.toLocaleString();
   
@@ -514,7 +616,44 @@ function renderAnalysis(){
   if(!el)return;
   var data=[];
   for(var i=0;i<rows.length;i++){var r=rows[i];if(cht(r)>=100)data.push(r);}
-  if(!data.length){el.innerHTML='<div style="padding:14px;text-align:center;color:var(--text2);font-size:10px;">没有足够的高数据角色进行分析（需要总聊天人数≥100）</div>';return;}
+  if(!data.length){el.innerHTML='<div style="padding:18px;text-align:center;color:var(--text2);font-size:13px;">没有足够的高数据角色进行分析（需要总聊天人数≥100）</div>';return;}
+
+  function esc(x){return String(x===undefined||x===null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function barRows(items,cls){
+    var max=1;items.forEach(function(it){if(it.value>max)max=it.value;});
+    var h='';
+    items.forEach(function(it){
+      var pct=max?Math.max(3,Math.round(it.value/max*100)):0;
+      h+='<div class="bar-row" title="'+esc(it.title||it.name)+'">'+
+        '<div class="bar-label">'+esc(it.name)+'</div>'+
+        '<div class="bar-track"><div class="bar-fill '+(cls||'')+'" style="width:'+pct+'%"></div></div>'+
+        '<div class="bar-val">'+Number(it.value||0).toLocaleString()+'</div>'+
+      '</div>';
+    });
+    return h||'<div class="chart-empty">暂无可视化数据</div>';
+  }
+  function barChart(title,items,cls){
+    return '<div class="chart-box"><div class="chart-title">'+esc(title)+'</div><div class="bar-chart">'+barRows(items,cls)+'</div></div>';
+  }
+  function donutChart(title,items){
+    var total=0;items.forEach(function(it){total+=it.value||0;});
+    if(!total)return '<div class="chart-box"><div class="chart-title">'+esc(title)+'</div><div class="chart-empty">暂无可视化数据</div></div>';
+    var pos=0,stops=[],legend='';
+    items.forEach(function(it){
+      var start=pos,part=(it.value||0)/total*100;pos+=part;
+      stops.push(it.color+' '+start.toFixed(2)+'% '+pos.toFixed(2)+'%');
+      legend+='<div class="donut-legend-row"><span style="background:'+it.color+'"></span><b>'+esc(it.name)+'</b><em>'+Number(it.value||0).toLocaleString()+' · '+((it.value||0)/total*100).toFixed(1)+'%</em></div>';
+    });
+    return '<div class="chart-box"><div class="chart-title">'+esc(title)+'</div><div class="donut-layout">'+
+      '<div class="donut" style="background:conic-gradient('+stops.join(',')+')"><div><strong>'+total.toLocaleString()+'</strong><small>热门角色</small></div></div>'+
+      '<div class="donut-legend">'+legend+'</div></div></div>';
+  }
+  function splitChart(title,leftTitle,leftItems,rightTitle,rightItems){
+    return '<div class="chart-box"><div class="chart-title">'+esc(title)+'</div><div class="split-chart">'+
+      '<div><div class="chart-subtitle male-title">'+esc(leftTitle)+'</div>'+barRows(leftItems,'male')+'</div>'+
+      '<div><div class="chart-subtitle female-title">'+esc(rightTitle)+'</div>'+barRows(rightItems,'female')+'</div>'+
+    '</div></div>';
+  }
 
   // ---- 1. Tag analysis with Chinese meanings ----
   var tagCount={};
@@ -556,69 +695,106 @@ function renderAnalysis(){
     });}catch(e){}
   });
 
-  // ---- Build HTML ----
-  var s='<div style="font-size:9px;color:var(--text2);padding:6px 0;">数据分析基于 <strong>'+data.length+'</strong> 个热门角色（总聊天人数≥100）</div>';
-
   // Summary
   var t3=archs.slice(0,3).map(function(a){return a;}).join('、');
   var mCount=data.filter(function(r){return gd(r)==='男';}).length;
   var fCount=data.filter(function(r){return gd(r)==='女';}).length;
-  s+='<div class="section"><h3>📌 分析摘要</h3><table><tr><th>指标</th><th>数值</th></tr>'+
+
+  var archChartItems=archs.slice(0,10).map(function(a){return {name:a,value:archCount[a].count,title:a};});
+  var tagChartItems=tags.slice(0,10).map(function(t){return {name:TAG_DICT[t]||t.replace('tag_',''),value:tagCount[t].count,title:t};});
+  var maleArchs=Object.keys(maleArch).sort(function(a,b){return maleArch[b]-maleArch[a];});
+  var femaleArchs=Object.keys(femaleArch).sort(function(a,b){return femaleArch[b]-femaleArch[a];});
+  var maleChartItems=maleArchs.slice(0,6).map(function(a){return {name:a,value:maleArch[a],title:a};});
+  var femaleChartItems=femaleArchs.slice(0,6).map(function(a){return {name:a,value:femaleArch[a],title:a};});
+
+  // ---- Build HTML ----
+  var s='<div class="analysis-note">数据分析基于 <strong>'+data.length+'</strong> 个热门角色（总聊天人数≥100）</div>';
+
+  s+='<div class="section"><h3>📌 分析摘要</h3><div class="viz-grid">'+
+    donutChart('热门角色性别占比',[
+      {name:'男性角色',value:mCount,color:'var(--male)'},
+      {name:'女性角色',value:fCount,color:'var(--female)'}
+    ])+
+    '<div class="table-wrap"><table><tr><th>指标</th><th>数值</th></tr>'+
     '<tr><td>热门角色总数</td><td><strong>'+data.length+'</strong> 个</td></tr>'+
     '<tr><td>男性热门角色</td><td><strong style="color:var(--male)">'+mCount+'</strong> 个</td></tr>'+
     '<tr><td>女性热门角色</td><td><strong style="color:var(--female)">'+fCount+'</strong> 个</td></tr>'+
-    '<tr><td>最受欢迎题材Top3</td><td><strong>'+t3+'</strong></td></tr>'+
-    '</table></div>';
+    '<tr><td>最受欢迎题材Top3</td><td><strong>'+esc(t3)+'</strong></td></tr>'+
+    '</table></div></div></div>';
 
   // Archetype frequency
-  s+='<div class="section"><h3>🎭 热门题材/角色类型分析</h3><table>';
+  s+='<div class="section"><h3>🎭 热门题材/角色类型分析</h3><div class="viz-grid">'+
+    barChart('Top 10 题材出现次数',archChartItems,'primary')+
+    '<div class="table-wrap"><table>';
   s+='<tr><th>题材类型</th><th>出现次数</th><th>占比</th><th>平均聊天</th><th>男性</th><th>女性</th></tr>';
-  var maxArch=archs.length?archCount[archs[0]].count:1;
   archs.slice(0,20).forEach(function(a){
     var ac=archCount[a];
     var pct=(ac.count/data.length*100).toFixed(1)+'%';
     var avg=(ac.totalChat/ac.count).toFixed(0);
-    s+='<tr class="tag-row"><td style="font-weight:500">'+a+'</td>'+
+    s+='<tr class="tag-row"><td style="font-weight:500">'+esc(a)+'</td>'+
       '<td>'+ac.count+'</td><td>'+pct+'</td>'+
       '<td class="nc">'+avg+'</td>'+
       '<td class="nc" style="color:var(--male)">'+ac.male+'</td>'+
       '<td class="nc" style="color:var(--female)">'+ac.female+'</td></tr>';
   });
-  s+='</table></div>';
+  s+='</table></div></div></div>';
 
   // Tag frequency with Chinese meanings
-  s+='<div class="section"><h3>🏷️ 热门标签分析</h3><table>';
+  s+='<div class="section"><h3>🏷️ 热门标签分析</h3><div class="viz-grid">'+
+    barChart('Top 10 标签出现次数',tagChartItems,'success')+
+    '<div class="table-wrap"><table>';
   s+='<tr><th>标签</th><th>中文含义</th><th>出现次数</th><th>占比</th><th>平均聊天</th><th>男性</th><th>女性</th></tr>';
-  var maxTag=tags.length?tagCount[tags[0]].count:1;
   tags.slice(0,25).forEach(function(t){
     var tc=tagCount[t];
     var meaning=TAG_DICT[t]||t.replace('tag_','');
     var pct=(tc.count/data.length*100).toFixed(1)+'%';
     var avg=(tc.totalChat/tc.count).toFixed(0);
     var m=tagMale[t]||0,f=tagFemale[t]||0;
-    s+='<tr class="tag-row"><td style="font-family:monospace;font-size:8px">'+t+'</td><td>'+meaning+'</td>'+
+    s+='<tr class="tag-row"><td style="font-family:monospace">'+esc(t)+'</td><td>'+esc(meaning)+'</td>'+
       '<td>'+tc.count+'</td><td>'+pct+'</td>'+
       '<td class="nc">'+avg+'</td>'+
       '<td class="nc" style="color:var(--male)">'+m+'</td>'+
       '<td class="nc" style="color:var(--female)">'+f+'</td></tr>';
   });
-  s+='</table></div>';
+  s+='</table></div></div></div>';
 
   // Archetype × gender cross analysis
-  var maleArchs=Object.keys(maleArch).sort(function(a,b){return maleArch[b]-maleArch[a];});
-  var femaleArchs=Object.keys(femaleArch).sort(function(a,b){return femaleArch[b]-femaleArch[a];});
-  s+='<div class="section"><h3>👤 性别偏好对比</h3><table><tr><th>排序</th><th style="color:var(--male)">👦 男性角色热门题材</th><th style="color:var(--female)">👧 女性角色热门题材</th></tr>';
+  s+='<div class="section"><h3>👤 性别偏好对比</h3><div class="viz-grid">'+
+    splitChart('男女热门题材 Top 6','男性角色',maleChartItems,'女性角色',femaleChartItems)+
+    '<div class="table-wrap"><table><tr><th>排序</th><th style="color:var(--male)">👦 男性角色热门题材</th><th style="color:var(--female)">👧 女性角色热门题材</th></tr>';
   var maxRow=Math.max(maleArchs.length,femaleArchs.length);
   for(var ri=0;ri<Math.min(maxRow,12);ri++){
     var ml=maleArchs[ri]||'',mc=maleArch[maleArchs[ri]]||'';
     var fl=femaleArchs[ri]||'',fc=femaleArch[femaleArchs[ri]]||'';
     s+='<tr><td style="text-align:center">'+(ri+1)+'</td>'+
-      '<td>'+(ml?ml+' <span class="tag-row" style="color:var(--text2)">('+mc+')</span>':'—')+'</td>'+
-      '<td>'+(fl?fl+' <span style="color:var(--text2)">('+fc+')</span>':'—')+'</td></tr>';
+      '<td>'+(ml?esc(ml)+' <span style="color:var(--text2)">('+mc+')</span>':'—')+'</td>'+
+      '<td>'+(fl?esc(fl)+' <span style="color:var(--text2)">('+fc+')</span>':'—')+'</td></tr>';
   }
-  s+='</table></div>';
+  s+='</table></div></div></div>';
 
-  var html='<style>.abp{font-size:9px;}.abp h3{font-size:11px;font-weight:600;margin:8px 0 4px;}.abp table{width:auto;min-width:300px;}.abp th{font-size:9px;padding:3px 6px;text-align:left;font-weight:600;background:#f8f9fe;border-bottom:1px solid var(--border);}.abp td{padding:2px 6px;font-size:9px;border-bottom:1px solid var(--border);}.abp .tag-row:hover td{background:#f8f9fe;}.abp .section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;margin-bottom:6px}.abp .nc{text-align:right;font-family:monospace;font-size:9px}</style><div class="abp">'+s+'</div>';
+  var html='<style>'+
+    '.abp{font-size:12px;padding:8px;color:var(--text)}'+
+    '.abp .analysis-note{font-size:12px;color:var(--text2);padding:2px 0 8px}'+
+    '.abp h3{font-size:15px;font-weight:600;margin:0 0 10px}'+
+    '.abp .section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:10px}'+
+    '.abp .viz-grid{display:grid;grid-template-columns:minmax(280px,380px) minmax(460px,1fr);gap:14px;align-items:start}'+
+    '.abp .chart-box{min-width:0}'+
+    '.abp .chart-title{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)}'+
+    '.abp .chart-subtitle{font-size:12px;font-weight:600;margin:0 0 6px}.abp .male-title{color:var(--male)}.abp .female-title{color:var(--female)}'+
+    '.abp .bar-chart{display:flex;flex-direction:column;gap:7px}'+
+    '.abp .bar-row{display:grid;grid-template-columns:minmax(104px,150px) 1fr 48px;gap:8px;align-items:center;min-width:0}'+
+    '.abp .bar-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}'+
+    '.abp .bar-track{height:13px;background:#edf0f7;border-radius:7px;overflow:hidden}'+
+    '.abp .bar-fill{height:100%;border-radius:7px;background:var(--primary)}.abp .bar-fill.success{background:var(--success)}.abp .bar-fill.male{background:var(--male)}.abp .bar-fill.female{background:var(--female)}'+
+    '.abp .bar-val{text-align:right;font-family:monospace;color:var(--text2)}'+
+    '.abp .donut-layout{display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center}'+
+    '.abp .donut{width:132px;height:132px;border-radius:50%;display:grid;place-items:center}.abp .donut>div{width:76px;height:76px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--border)}'+
+    '.abp .donut strong{font-size:18px}.abp .donut small{font-size:11px;color:var(--text2)}'+
+    '.abp .donut-legend{display:flex;flex-direction:column;gap:7px}.abp .donut-legend-row{display:grid;grid-template-columns:12px auto 1fr;gap:6px;align-items:center}.abp .donut-legend-row span{width:12px;height:12px;border-radius:50%}.abp .donut-legend-row em{font-style:normal;color:var(--text2);text-align:right}'+
+    '.abp .split-chart{display:grid;grid-template-columns:1fr 1fr;gap:14px}'+
+    '.abp .table-wrap{overflow:auto}.abp table{width:100%;min-width:420px;border-collapse:collapse}.abp th{font-size:12px;padding:6px 8px;text-align:left;font-weight:600;background:#f8f9fe;border-bottom:1px solid var(--border);position:static}.abp td{padding:6px 8px;font-size:12px;border-bottom:1px solid var(--border);max-width:none;white-space:nowrap}.abp .tag-row:hover td{background:#f8f9fe}.abp .nc{text-align:right;font-family:monospace;font-size:12px}.abp .chart-empty{color:var(--text2);padding:12px 0}'+
+    '@media(max-width:980px){.abp .viz-grid{grid-template-columns:1fr}.abp .split-chart{grid-template-columns:1fr}.abp .donut-layout{grid-template-columns:120px 1fr}.abp .donut{width:120px;height:120px}}'+
+    '</style><div class="abp">'+s+'</div>';
   el.innerHTML=html;
 }
 // Add analysis to rs function handling
@@ -635,10 +811,14 @@ document.querySelectorAll('.tab').forEach(function(tab){
   });
 });
 
-$('tt').addEventListener('click',function(){topOnly=!topOnly;this.classList.toggle('act');caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
-$('mcf').addEventListener('input',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
-$('sf').addEventListener('input',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
-$('brf').addEventListener('click',function(){caches={};if(ready)rs(document.querySelector('.tab.act').dataset.s);});
+$('pgFirst').addEventListener('click',function(){goPage('first');});
+$('pgPrev').addEventListener('click',function(){goPage('prev');});
+$('pgNext').addEventListener('click',function(){goPage('next');});
+$('pgLast').addEventListener('click',function(){goPage('last');});
+$('tt').addEventListener('click',function(){topOnly=!topOnly;this.classList.toggle('act');caches={};renderCurrent(true);});
+$('mcf').addEventListener('input',function(){caches={};renderCurrent(true);});
+$('sf').addEventListener('input',function(){caches={};renderCurrent(true);});
+$('brf').addEventListener('click',function(){caches={};renderCurrent(true);});
 
 $('bar').addEventListener('click',function(){
   var checks=document.querySelectorAll('.chk:checked');
@@ -647,6 +827,53 @@ $('bar').addEventListener('click',function(){
   $('bex').disabled=rlist.length===0;caches={};renderRP();rs(document.querySelector('.tab.act').dataset.s);
   msg('已加'+(rlist.length-before)+'个');
 });
+
+function escHtml(x){return String(x===undefined||x===null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function uniqCols(cols){
+  var seen={},out=[];
+  cols.forEach(function(c){if(EXPORT_FIELDS.indexOf(c)>=0&&!seen[c]){seen[c]=true;out.push(c);}});
+  return out;
+}
+function fieldLabel(col){if(col==='user_id')return 'user_id（UID）';if(col==='头像')return '头像（图片URL）';return col;}
+function renderExportChooser(){
+  exportCols=uniqCols(exportCols);
+  var chosen={};exportCols.forEach(function(c){chosen[c]=true;});
+  var h='<div class="expc"><div class="exp-head"><div class="exp-title">导出字段 <span class="exp-note">已选 <span id="expCount">'+exportCols.length+'</span> 项</span></div><div class="exp-actions">'+
+    '<button class="exp-btn" type="button" data-exp-preset="simple">精简字段</button>'+
+    '<button class="exp-btn" type="button" data-exp-preset="shown">当前展示字段</button>'+
+    '<button class="exp-btn" type="button" data-exp-preset="all">全部字段</button>'+
+    '</div></div><div class="exp-grid">';
+  EXPORT_FIELDS.forEach(function(col){
+    h+='<label><input type="checkbox" class="exp-field" value="'+escHtml(col)+'"'+(chosen[col]?' checked':'')+'> '+escHtml(fieldLabel(col))+'</label>';
+  });
+  h+='</div></div>';
+  return h;
+}
+function bindExportControls(rp){
+  function sync(){
+    var next=[];
+    rp.querySelectorAll('.exp-field:checked').forEach(function(cb){next.push(cb.value);});
+    exportCols=uniqCols(next);
+    var c=rp.querySelector('#expCount');if(c)c.textContent=exportCols.length;
+  }
+  rp.querySelectorAll('.exp-field').forEach(function(cb){cb.addEventListener('change',sync);});
+  rp.querySelectorAll('[data-exp-preset]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var p=btn.dataset.expPreset;
+      if(p==='simple')exportCols=['user_id','头像'];
+      else if(p==='shown')exportCols=SH.slice();
+      else if(p==='all')exportCols=EXPORT_FIELDS.slice();
+      renderRP();
+    });
+  });
+}
+function exportValue(row,col){
+  if(col==='操作类型')return '替换上线';
+  var val=v(row,col);
+  if(col==='性别')return gd(row);
+  if(NC[col]&&typeof val==='number')return col.indexOf('率')>=0?val.toFixed(4):val;
+  return val;
+}
 
 function renderRP(){
   var rp=$('rp');
@@ -659,24 +886,27 @@ function renderRP(){
     var name=v(row,'昵称')||'—',g=gd(row),c=cht(row),img=v(row,'头像'),gc=g==='男'?'m':'f';
     items+='<div class="rpi">'+(img?'<img class="av" src="'+img+'" onerror="this.style.display=\'none\'">':'<div style="width:16px;height:16px;border-radius:50%;background:#eee;"></div>')+'<strong>'+name+'</strong> <span style="font-family:monospace;font-size:8px;color:var(--text2);">'+id+'</span><span class="gb '+gc+'">'+g+'</span> <span style="font-weight:600;">'+c.toLocaleString()+'</span>人次<button class="rm" data-id="'+id+'">✕</button></div>';
   }
-  rp.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><h3>📋 待替换 ('+rlist.length+')</h3><button id="cc" class="btn bo" style="padding:1px 4px;font-size:8px;">清空</button></div>'+items;
+  rp.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><h3>📋 待替换 ('+rlist.length+')</h3><button id="cc" class="btn bo" style="padding:3px 7px;font-size:11px;">清空</button></div>'+renderExportChooser()+items;
+  bindExportControls(rp);
   rp.querySelectorAll('.rm').forEach(function(btn){btn.addEventListener('click',function(){rlist=rlist.filter(function(i){return i!==btn.dataset.id;});$('bex').disabled=rlist.length===0;renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});});
   var cb=rp.querySelector('#cc');if(cb)cb.addEventListener('click',function(){rlist=[];$('bex').disabled=true;renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});
 }
 
 $('bex').addEventListener('click',function(){
   if(!rlist.length){msg('清单为空');return;}
+  exportCols=uniqCols(exportCols);
+  if(!exportCols.length){msg('请至少选择一个导出字段');return;}
   var out=[];
   for(var ri=0;ri<rlist.length;ri++){var id=rlist[ri],row=null;
     for(var rj=0;rj<rows.length;rj++){if(String(v(rows[rj],'user_id'))===String(id)){row=rows[rj];break;}}
-    if(!row)continue;var obj={'操作类型':'替换上线'};
-    for(var hi=0;hi<SH.length;hi++){var col=SH[hi],val2=v(row,col);if(col==='性别')val2=gd(row);else if(NC[col]&&typeof val2==='number')val2=col.indexOf('率')>=0?val2.toFixed(4):val2;obj[col]=val2;}
+    if(!row)continue;var obj={};
+    for(var hi=0;hi<exportCols.length;hi++){var col=exportCols[hi];obj[col]=exportValue(row,col);}
     out.push(obj);}
   if(!out.length){msg('无数据');return;}
   var ws=XLSX.utils.json_to_sheet(out);var wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'替换清单');
   XLSX.writeFile(wb,'替换清单_'+new Date().toISOString().slice(0,10)+'.xlsx');
-  msg('📥 已导出 '+out.length+' 条');
+  msg('📥 已导出 '+out.length+' 条，'+exportCols.length+' 个字段');
 });
 document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();$('bex').click();}});
 })();
