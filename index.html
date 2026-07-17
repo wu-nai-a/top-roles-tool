@@ -25,6 +25,11 @@
   .uz .icon{font-size:28px;opacity:.5}
   .uz p{color:var(--text2);font-size:13px;margin:4px 0}
   .uz .btn{padding:6px 14px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer}
+  .sample-panel{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin:-1px 0 8px}
+  .sample-panel strong{display:block;font-size:13px;margin-bottom:2px}
+  .sample-panel span{display:block;font-size:12px;color:var(--text2);line-height:1.45}
+  .sample-download{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:6px 12px;border-radius:4px;background:#1f9d67;color:#fff;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap}
+  .sample-download:hover{background:#188554}
   #fi{display:none}
   .prog{display:none;text-align:center;padding:20px 10px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
   .prog .spin{display:inline-block;width:20px;height:20px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:s .7s linear infinite;margin-bottom:4px}
@@ -120,6 +125,8 @@
   .help-step strong{display:block;font-size:13px;margin-bottom:2px}
   .help-step span{display:block;font-size:12px;color:var(--text2);line-height:1.45}
   .help-tips{margin-top:12px;padding:10px 12px;border-radius:6px;background:#f7fbf8;border:1px solid #dcefe0;color:#335a39;font-size:12px;line-height:1.6}
+  .help-tips a{color:#1f7a4f;font-weight:650;text-decoration:none}
+  .help-tips a:hover{text-decoration:underline}
   .help-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--border)}
   .help-ok{padding:6px 14px;border:none;border-radius:4px;background:var(--primary);color:#fff;font-size:13px;cursor:pointer}
   .help-ok:hover{opacity:.9}
@@ -137,7 +144,7 @@
   .expc .exp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:5px 8px;max-height:126px;overflow:auto;padding-top:4px}
   .expc label{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text)}
   .expc input{width:14px;height:14px}
-  @media(max-width:768px){body{padding:5px;font-size:12px}header h1{font-size:16px}.tab{font-size:12px;padding:6px 8px}td{max-width:95px}.help-head{padding:14px}.help-body{padding:12px}.help-foot{padding:12px 14px}}
+  @media(max-width:768px){body{padding:5px;font-size:12px}header h1{font-size:16px}.sample-panel{align-items:flex-start;flex-direction:column}.sample-download{width:100%}.tab{font-size:12px;padding:6px 8px}td{max-width:95px}.help-head{padding:14px}.help-body{padding:12px}.help-foot{padding:12px 14px}}
 </style>
 </head>
 <body>
@@ -149,6 +156,13 @@
   <p>拖拽 xlsx 到此处，或点击选择文件</p>
   <button class="btn" id="ub">选择文件</button>
   <input type="file" id="fi" accept=".xlsx,.xls">
+</div>
+<div class="sample-panel" id="samplePanel">
+  <div>
+    <strong>没有现成表格？先用测试集体验</strong>
+    <span>下载包含 12 条 AI 热门角色的 XLSX 样例，上传后可快速查看筛选、分析和清单导出效果。</span>
+  </div>
+  <a class="sample-download" href="test-datasets/ai-top-roles-sample.xlsx" download="ai-top-roles-sample.xlsx">下载测试集</a>
 </div>
 
 <div class="prog" id="prog">
@@ -248,7 +262,7 @@
         <div class="help-step"><b>5</b><div><strong>加入清单</strong><span>勾选目标角色后，点击“添加至清单”。头像可以点击放大。</span></div></div>
         <div class="help-step"><b>6</b><div><strong>导出 XLSX</strong><span>在清单页选择需要导出的字段，再点击导出。</span></div></div>
       </div>
-      <div class="help-tips">常用导出：如果只需要 UID 和图片链接，清单页默认已选择 user_id 与头像 URL。</div>
+      <div class="help-tips">没有现成表格时，可以先 <a href="test-datasets/ai-top-roles-sample.xlsx" download="ai-top-roles-sample.xlsx">下载测试集</a> 体验完整流程。常用导出：如果只需要 UID 和图片链接，清单页默认已选择 user_id 与头像 URL。</div>
     </div>
     <div class="help-foot">
       <button class="help-ok" id="helpOk" type="button">知道了</button>
@@ -321,7 +335,7 @@ function loadF(file){
   if(mb>500){msg('文件超过 500MB');return;}
   if(mb>200)msg('⚠️ 文件超过 200MB，处理可能较慢',3000);
   rows=[];cmap=[];fixs={};missingCols=[];rlist=[];topOnly=false;ready=false;liveSet={};dupSet={};exportCols=['user_id','头像'];caches={};resetPages();
-  $('mc').style.display='none';$('sum').style.display='none';$('fxr').style.display='none';$('cfg').style.display='none';$('uz').style.display='none';
+  $('mc').style.display='none';$('sum').style.display='none';$('fxr').style.display='none';$('cfg').style.display='none';$('uz').style.display='none';$('samplePanel').style.display='none';
   pg('读取...',mb.toFixed(1)+' MB',0);
   setTimeout(function(){
     var r=new FileReader();
@@ -345,10 +359,10 @@ function loadF(file){
                 try{var batch=XLSX.utils.sheet_to_json(ws,{header:1,range:{s:{r:cr,c:0},e:{r:er,c:ref.e.c}},defval:''});
                 for(var bi=0;bi<batch.length;bi++){var raw=batch[bi],row={},has=false;for(var ci=0;ci<cmap.length;ci++){var v=raw[ci]!==undefined?raw[ci]:'';if(v===null||v===undefined)v='';row[cmap[ci]]=v;if(v!=='')has=true;}if(has)rd.push(row);}
                 cr=er+1;if(cr<=ref.e.r){var pct=50+Math.round((cr-ref.s.r)/(ref.e.r-ref.s.r)*30);pg('解析...',Math.min(cr,ref.e.r)+'/'+(ref.e.r-ref.s.r)+'行',Math.min(pct,80));setTimeout(rb,0);}
-                else{rows=rd;setTimeout(fix,0);}}catch(err){msg('解析出错');hp();$('uz').style.display='block';}})();
-            }catch(err){msg('失败');console.error(err);hp();$('uz').style.display='block';}
+                else{rows=rd;setTimeout(fix,0);}}catch(err){msg('解析出错');hp();$('uz').style.display='block';$('samplePanel').style.display='flex';}})();
+            }catch(err){msg('失败');console.error(err);hp();$('uz').style.display='block';$('samplePanel').style.display='flex';}
           },0);
-        }catch(err){msg('失败');console.error(err);hp();$('uz').style.display='block';}
+        }catch(err){msg('失败');console.error(err);hp();$('uz').style.display='block';$('samplePanel').style.display='flex';}
       });
     };r.readAsArrayBuffer(file);
   },100);
