@@ -1,8 +1,8 @@
 # Top 角色数据工具
 
-> 面向 Top 角色数据表的本地分析、筛选、清单导出和头像批量下载工具
+> 面向 Top 角色数据表的本地分析、筛选和清单导出工具
 
-这是一个纯前端网页工具。上传 XLSX 后，所有解析、筛选、统计和导出都在浏览器本地完成，适合快速处理 Top 角色数据、制作角色清单、导出头像素材。
+这是一个纯前端网页工具。上传 XLSX 后，所有解析、筛选、统计和导出都在浏览器本地完成，适合快速处理 Top 角色数据、制作角色清单、导出 UID 与头像 URL 等字段。
 
 ## 功能概览
 
@@ -31,8 +31,6 @@
 - 支持勾选当前页、取消当前页，以及将当前筛选结果一键加入清单
 - 可自定义导出字段，默认导出 `user_id` 和头像 URL
 - 一键导出为结构化 XLSX 文件
-- 支持将清单内角色头像批量打包下载为 ZIP
-- 公开网页可配置 Cloudflare Worker 图片代理，解决图片源 CORS 限制
 - 支持快捷键 `Cmd/Ctrl + S` 快速导出
 
 ### 🖼️ 头像预览
@@ -47,7 +45,7 @@
 ### 🧪 测试集
 - 仓库内置 `test-datasets/ai-top-roles-sample.xlsx`
 - 页面上传区下方提供“下载测试集”按钮
-- 样例包含 12 条角色数据，覆盖 Top 角色、男女筛选、新音色、分析图表、清单导出和头像下载
+- 样例包含 12 条角色数据，覆盖 Top 角色、男女筛选、新音色、分析图表和清单导出
 
 ### 🖼️ 角色状态标注
 每个角色自动标注状态标签：
@@ -63,14 +61,11 @@
 4. **等待处理** — 处理进度条会显示当前阶段
 5. **浏览数据** — 通过顶部 Tab 切换不同分类表格，使用分页查看后续角色
 6. **分析数据** — 分析板块会自动生成表格和图表
-7. **导出清单** — 勾选角色 → 点击"添加至角色清单" → 选择导出字段 → 导出
-8. **批量下载头像** — 开启 Top≥100 或其他筛选条件 → 点击"当前筛选加入清单" → 点击"下载清单头像ZIP"
-9. **公开站点下载** — 若头像下载失败，在配置里填写图片下载代理 URL 后重试
+7. **导出清单** — 勾选角色，或点击"勾选本页"/"当前筛选加入清单" → 选择导出字段 → 导出
 
 ### 注意事项
 - 推荐上传 **200MB 以内** 的 XLSX 文件；200MB 以上会提示性能风险，500MB 以上会阻止上传
 - 所有数据处理在**浏览器本地**完成，不上传任何数据到服务器
-- 头像 ZIP 下载依赖图片源允许浏览器跨域读取；公开站点建议配置 `workers/avatar-proxy.js`，详见 `docs/public-batch-avatar-download.md`
 - 推荐使用 Chrome / Edge 等现代浏览器
 
 ## 部署方式
@@ -83,19 +78,9 @@
 4. Branch 选择 `main`，目录选择 `/ (root)`
 5. 保存后等待几分钟，即可通过 `https://<你的用户名>.github.io/<仓库名>/` 访问
 
-公开站点如需让访客也能批量下载头像，请同时部署图片代理，见 [Public Batch Avatar Download](docs/public-batch-avatar-download.md)。
-
-仓库已包含 Cloudflare Workers 免费版配置 `wrangler.toml`。登录 Cloudflare 后，可在项目目录运行：
-
-```bash
-npx wrangler deploy
-```
-
-部署成功后，把 Worker URL 填到网页的“头像下载代理”即可。
-
 ### 直接分享
 
-将 `index.html` 文件发送给同事，直接用浏览器打开即可使用。若需要批量下载头像，建议使用 GitHub Pages + 图片代理。
+将 `index.html` 文件发送给同事，直接用浏览器打开即可使用。
 
 ### 任意静态托管
 
@@ -105,22 +90,15 @@ npx wrangler deploy
 
 - 纯前端 HTML + CSS + JavaScript
 - [SheetJS (xlsx)](https://sheetjs.com/) — Excel 文件解析与导出
-- [JSZip](https://stuk.github.io/jszip/) — 浏览器内头像 ZIP 打包
-- Cloudflare Worker — 可选图片代理，用于公开网页批量下载头像
 - 无后端依赖，无服务器成本
 
 ## 项目结构
 
 ```
 top-roles-tool/
-├── docs/
-│   └── public-batch-avatar-download.md     # 公开站点批量头像下载部署说明
 ├── index.html                              # 主工具页面（单页应用）
 ├── test-datasets/
 │   └── ai-top-roles-sample.xlsx            # 新用户体验用测试集
-├── workers/
-│   └── avatar-proxy.js                     # 可选 Cloudflare Worker 图片代理
-├── wrangler.toml                           # Cloudflare Workers 免费版部署配置
 ├── README.md                               # 本说明文件
 └── .gitignore                              # Git 忽略规则
 ```

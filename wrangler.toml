@@ -1,8 +1,0 @@
-name = "top-roles-avatar-proxy"
-main = "workers/avatar-proxy.js"
-compatibility_date = "2026-07-21"
-
-[vars]
-ALLOWED_IMAGE_HOSTS = "ttq-pub.oss-cn-beijing.aliyuncs.com"
-ALLOWED_ORIGINS = "https://wu-nai-a.github.io"
-MAX_BYTES = "20971520"
