@@ -307,6 +307,7 @@ var T=$('toast'),tm=null;
 function msg(s,d){T.textContent=s;T.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){T.classList.remove('show');},d||1500);}
 var HELP_KEY='topRolesToolHelpSeenV2';
 var AVATAR_PROXY_KEY='topRolesToolAvatarProxyV1';
+var DEFAULT_AVATAR_PROXY='https://top-roles-avatar-proxy.z728842620.workers.dev';
 var HM=$('helpModal'),HMB=$('helpBtn'),HMC=$('helpClose'),HMO=$('helpOk');
 function hasSeenHelp(){try{return localStorage.getItem(HELP_KEY)==='1';}catch(e){return false;}}
 function markHelpSeen(){try{localStorage.setItem(HELP_KEY,'1');}catch(e){}}
@@ -322,7 +323,8 @@ function resetActivePage(){pageBySection[activeSection()]=0;}
 function renderCurrent(reset){if(reset)resetPages();if(ready)rs(activeSection());}
 function avatarProxyUrl(){
   var el=$('avatarProxy');
-  return el?el.value.trim().replace(/\/+$/,''):'';
+  var custom=el?el.value.trim().replace(/\/+$/,''):'';
+  return custom||DEFAULT_AVATAR_PROXY;
 }
 function avatarRequestUrl(url){
   var proxy=avatarProxyUrl();
@@ -346,7 +348,7 @@ HMC.addEventListener('click',function(){hideHelp(true);});
 HMO.addEventListener('click',function(){hideHelp(true);});
 HM.addEventListener('click',function(e){if(e.target===HM)hideHelp(true);});
 setTimeout(function(){if(!hasSeenHelp())showHelp();},250);
-try{$('avatarProxy').value=localStorage.getItem(AVATAR_PROXY_KEY)||'';}catch(e){}
+try{$('avatarProxy').value=localStorage.getItem(AVATAR_PROXY_KEY)||DEFAULT_AVATAR_PROXY;}catch(e){}
 $('avatarProxy').addEventListener('change',function(){try{localStorage.setItem(AVATAR_PROXY_KEY,this.value.trim());}catch(e){}msg(this.value.trim()?'已保存头像代理':'已清空头像代理');});
 
 $('ub').addEventListener('click',function(){$('fi').click();});
