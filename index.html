@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI主播替换工具 - 格式修复 · 排序筛选 · Top角色</title>
+<title>Top角色数据工具 - 筛选分析 · 清单导出 · 头像下载</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root {
     --bg: #f4f5f9; --card: #fff; --text: #1a1d29; --text2: #6b7094;
@@ -101,8 +102,10 @@
   .act .btn{padding:5px 10px;border:none;border-radius:3px;font-size:12px;cursor:pointer;transition:opacity .12s}
   .act .btn:hover{opacity:.8}.act .bp{background:var(--primary);color:#fff}
   .act .bs{background:var(--success);color:#fff}
+  .act .bd{background:#1f9d67;color:#fff}
   .act .bo{background:transparent;border:1px solid var(--border);color:var(--text)}
   .act .btn:disabled{opacity:.35;cursor:not-allowed}
+  .act .ast{font-size:11px;color:var(--text2);min-width:96px;text-align:right}
   .toast{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:#1a1d29;color:#fff;padding:7px 14px;border-radius:4px;font-size:12px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999}
   .toast.show{opacity:1}
   .img-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(12,15,28,.76);z-index:1000}
@@ -149,7 +152,7 @@
 </head>
 <body>
 <div class="app">
-<header><h1>🍩 AI主播替换 <small>格式修复 · 排序筛选 · 音色分类</small></h1><button class="help-btn" id="helpBtn" type="button">使用说明</button></header>
+<header><h1>🍩 Top角色数据工具 <small>筛选分析 · 清单导出 · 头像下载</small></h1><button class="help-btn" id="helpBtn" type="button">使用说明</button></header>
 
 <div class="uz" id="uz">
   <div class="icon">📋</div>
@@ -160,7 +163,7 @@
 <div class="sample-panel" id="samplePanel">
   <div>
     <strong>没有现成表格？先用测试集体验</strong>
-    <span>下载包含 12 条 AI 热门角色的 XLSX 样例，上传后可快速查看筛选、分析和清单导出效果。</span>
+    <span>下载包含 12 条热门角色的 XLSX 样例，上传后可快速查看筛选、分析、清单导出和头像下载效果。</span>
   </div>
   <a class="sample-download" href="test-datasets/ai-top-roles-sample.xlsx" download="ai-top-roles-sample.xlsx">下载测试集</a>
 </div>
@@ -196,6 +199,10 @@
     <button class="btn" id="btnDedupAvatars">🖼 头像去重</button>
     <span id="dedupStatus" style="font-size:8px;color:var(--text2)"></span>
   </div>
+  <div class="cfg-row" style="margin-top:2px">
+    <label>头像下载代理 <input type="url" id="avatarProxy" placeholder="可选：Cloudflare Worker URL" style="width:220px"></label>
+    <span style="font-size:8px;color:var(--text2)">公开网页批量下载时使用；不填则直接请求头像 URL</span>
+  </div>
 </div>
 
 <div id="mc" style="display:none">
@@ -205,7 +212,7 @@
     <div class="tab" data-s="female">👧 女</div>
     <div class="tab" data-s="analysis">📊 分析</div>
     <div class="tab" data-s="newvoice">🎙️ 新音色</div>
-    <div class="tab" data-s="replace">📋 清单</div>
+    <div class="tab" data-s="replace">📋 角色清单</div>
   </div>
   <div class="flt">
     <label>最低 <input type="number" id="mcf" value="0" min="0"></label>
@@ -235,8 +242,13 @@
 
   <div class="act">
     <button class="btn bo" id="brf">🔄 刷新</button>
-    <button class="btn bp" id="bar">➕ 添加至清单</button>
-    <button class="btn bs" id="bex" disabled>📥 导出替换清单</button>
+    <button class="btn bo" id="bselpg">☑️ 勾选本页</button>
+    <button class="btn bo" id="bclearpg">⬜ 取消本页</button>
+    <button class="btn bo" id="ballf">➕ 当前筛选加入清单</button>
+    <button class="btn bp" id="bar">➕ 添加至角色清单</button>
+    <button class="btn bs" id="bex" disabled>📥 导出角色清单</button>
+    <button class="btn bd" id="bdav" disabled>🖼 下载清单头像ZIP</button>
+    <span class="ast" id="ast"></span>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -259,10 +271,10 @@
         <div class="help-step"><b>2</b><div><strong>筛选角色</strong><span>用性别、时段、最低聊天人数、Top≥100 等条件缩小范围。</span></div></div>
         <div class="help-step"><b>3</b><div><strong>分页浏览</strong><span>每页 500 条，可用下一页查看 501-1000 及后续数据。</span></div></div>
         <div class="help-step"><b>4</b><div><strong>查看分析</strong><span>分析页会展示热门题材、标签和性别偏好图表。</span></div></div>
-        <div class="help-step"><b>5</b><div><strong>加入清单</strong><span>勾选目标角色后，点击“添加至清单”。头像可以点击放大。</span></div></div>
-        <div class="help-step"><b>6</b><div><strong>导出 XLSX</strong><span>在清单页选择需要导出的字段，再点击导出。</span></div></div>
+        <div class="help-step"><b>5</b><div><strong>加入清单</strong><span>勾选目标角色后，点击“添加至角色清单”。头像可以点击放大。</span></div></div>
+        <div class="help-step"><b>6</b><div><strong>批量下载</strong><span>可将当前筛选结果加入清单，再把清单头像打包下载为 ZIP。</span></div></div>
       </div>
-      <div class="help-tips">没有现成表格时，可以先 <a href="test-datasets/ai-top-roles-sample.xlsx" download="ai-top-roles-sample.xlsx">下载测试集</a> 体验完整流程。常用导出：如果只需要 UID 和图片链接，清单页默认已选择 user_id 与头像 URL。</div>
+      <div class="help-tips">没有现成表格时，可以先 <a href="test-datasets/ai-top-roles-sample.xlsx" download="ai-top-roles-sample.xlsx">下载测试集</a> 体验完整流程。常用导出：如果只需要 UID 和图片链接，角色清单页默认已选择 user_id 与头像 URL。公开网页批量下载头像时，建议在配置里填写图片下载代理地址。</div>
     </div>
     <div class="help-foot">
       <button class="help-ok" id="helpOk" type="button">知道了</button>
@@ -284,6 +296,7 @@ var missingCols=[];
 var liveSet={},dupSet={};
 var exportCols=['user_id','头像'];
 var periodDays=0,periodExclude=false; // 时段过滤
+var avatarDownloading=false;
 
 var caches={};
 var curSec='fixed';
@@ -293,6 +306,7 @@ var $=function(id){return document.getElementById(id);};
 var T=$('toast'),tm=null;
 function msg(s,d){T.textContent=s;T.classList.add('show');clearTimeout(tm);tm=setTimeout(function(){T.classList.remove('show');},d||1500);}
 var HELP_KEY='topRolesToolHelpSeenV2';
+var AVATAR_PROXY_KEY='topRolesToolAvatarProxyV1';
 var HM=$('helpModal'),HMB=$('helpBtn'),HMC=$('helpClose'),HMO=$('helpOk');
 function hasSeenHelp(){try{return localStorage.getItem(HELP_KEY)==='1';}catch(e){return false;}}
 function markHelpSeen(){try{localStorage.setItem(HELP_KEY,'1');}catch(e){}}
@@ -306,12 +320,34 @@ function activeSection(){var t=document.querySelector('.tab.act');return t?t.dat
 function resetPages(){pageBySection={};}
 function resetActivePage(){pageBySection[activeSection()]=0;}
 function renderCurrent(reset){if(reset)resetPages();if(ready)rs(activeSection());}
+function avatarProxyUrl(){
+  var el=$('avatarProxy');
+  return el?el.value.trim().replace(/\/+$/,''):'';
+}
+function avatarRequestUrl(url){
+  var proxy=avatarProxyUrl();
+  if(!proxy)return url;
+  return proxy+(proxy.indexOf('?')>=0?'&':'?')+'url='+encodeURIComponent(url);
+}
+function updateActionState(){
+  var has=rlist.length>0;
+  var avatarCount=0;
+  for(var i=0;i<rlist.length;i++){
+    var row=findRowById(rlist[i]);
+    if(row&&v(row,'头像'))avatarCount++;
+  }
+  if($('bex'))$('bex').disabled=!has;
+  if($('bdav'))$('bdav').disabled=!avatarCount||avatarDownloading;
+  if($('ast'))$('ast').textContent=has?('清单 '+rlist.length+' · 头像 '+avatarCount):'';
+}
 
 HMB.addEventListener('click',function(){showHelp();});
 HMC.addEventListener('click',function(){hideHelp(true);});
 HMO.addEventListener('click',function(){hideHelp(true);});
 HM.addEventListener('click',function(e){if(e.target===HM)hideHelp(true);});
 setTimeout(function(){if(!hasSeenHelp())showHelp();},250);
+try{$('avatarProxy').value=localStorage.getItem(AVATAR_PROXY_KEY)||'';}catch(e){}
+$('avatarProxy').addEventListener('change',function(){try{localStorage.setItem(AVATAR_PROXY_KEY,this.value.trim());}catch(e){}msg(this.value.trim()?'已保存头像代理':'已清空头像代理');});
 
 $('ub').addEventListener('click',function(){$('fi').click();});
 $('uz').addEventListener('click',function(e){if(e.target!==$('ub'))$('fi').click();});
@@ -334,7 +370,7 @@ function loadF(file){
   var mb=file.size/1024/1024;
   if(mb>500){msg('文件超过 500MB');return;}
   if(mb>200)msg('⚠️ 文件超过 200MB，处理可能较慢',3000);
-  rows=[];cmap=[];fixs={};missingCols=[];rlist=[];topOnly=false;ready=false;liveSet={};dupSet={};exportCols=['user_id','头像'];caches={};resetPages();
+  rows=[];cmap=[];fixs={};missingCols=[];rlist=[];topOnly=false;ready=false;liveSet={};dupSet={};exportCols=['user_id','头像'];avatarDownloading=false;caches={};resetPages();updateActionState();
   $('mc').style.display='none';$('sum').style.display='none';$('fxr').style.display='none';$('cfg').style.display='none';$('uz').style.display='none';$('samplePanel').style.display='none';
   pg('读取...',mb.toFixed(1)+' MB',0);
   setTimeout(function(){
@@ -547,7 +583,7 @@ function rs(section){
   var hh='<tr><th style="width:46px;text-align:center;">#</th><th style="width:36px;">图</th>';
   for(var hi=0;hi<cols.length;hi++){var col=cols[hi];hh+='<th class="'+(fixs[col]?'cf':'')+'">'+col+'</th>';}
   hh+='<th style="width:44px;">状态</th>';
-  if(showCheck)hh+='<th class="selcol">✓</th>';
+  if(showCheck)hh+='<th class="selcol"><input type="checkbox" class="chk pgchk" title="勾选本页"></th>';
   hh+='</tr>';th.innerHTML=hh;
 
   var ttl=data.length,totalPages=Math.max(1,Math.ceil(ttl/PAGE_SIZE));
@@ -890,13 +926,42 @@ $('tt').addEventListener('click',function(){topOnly=!topOnly;this.classList.togg
 $('mcf').addEventListener('input',function(){caches={};renderCurrent(true);});
 $('sf').addEventListener('input',function(){caches={};renderCurrent(true);});
 $('brf').addEventListener('click',function(){caches={};renderCurrent(true);});
+$('bselpg').addEventListener('click',function(){setCurrentPageChecks(true);});
+$('bclearpg').addEventListener('click',function(){setCurrentPageChecks(false);});
+$('ballf').addEventListener('click',function(){
+  var sec=activeSection();
+  if(sec==='analysis'||sec==='replace'){msg('请先切到总表/男女/新音色页');return;}
+  var data=getC(sec),ids=[];
+  for(var i=0;i<data.length;i++){var id=v(data[i],'user_id');if(id)ids.push(String(id));}
+  addIdsToList(ids,'已加入当前筛选');
+});
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.classList&&e.target.classList.contains('pgchk'))setCurrentPageChecks(e.target.checked);
+});
+
+function currentPageChecks(){
+  var sc=document.getElementById('s-'+activeSection());
+  if(!sc)return [];
+  return Array.prototype.slice.call(sc.querySelectorAll('tbody .chk'));
+}
+function setCurrentPageChecks(checked){
+  var checks=currentPageChecks();
+  if(!checks.length){msg('当前页没有可勾选数据');return;}
+  checks.forEach(function(cb){cb.checked=checked;});
+  msg((checked?'已勾选':'已取消')+'本页 '+checks.length+' 条');
+}
+function addIdsToList(ids,prefix){
+  var before=rlist.length;
+  ids.forEach(function(id){if(id&&rlist.indexOf(id)===-1)rlist.push(id);});
+  updateActionState();caches={};renderRP();rs(activeSection());
+  msg((prefix||'已加')+' '+(rlist.length-before)+' 个');
+}
 
 $('bar').addEventListener('click',function(){
   var checks=document.querySelectorAll('.chk:checked');
-  var before=rlist.length;
-  checks.forEach(function(cb){var id=cb.dataset.id;if(id&&rlist.indexOf(id)===-1)rlist.push(id);});
-  $('bex').disabled=rlist.length===0;caches={};renderRP();rs(document.querySelector('.tab.act').dataset.s);
-  msg('已加'+(rlist.length-before)+'个');
+  var ids=[];
+  checks.forEach(function(cb){if(cb.dataset.id)ids.push(cb.dataset.id);});
+  addIdsToList(ids,'已加');
 });
 
 function escHtml(x){return String(x===undefined||x===null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -939,44 +1004,108 @@ function bindExportControls(rp){
   });
 }
 function exportValue(row,col){
-  if(col==='操作类型')return '替换上线';
+  if(col==='操作类型')return 'Top角色入选';
   var val=v(row,col);
   if(col==='性别')return gd(row);
   if(NC[col]&&typeof val==='number')return col.indexOf('率')>=0?val.toFixed(4):val;
   return val;
 }
+function findRowById(id){
+  for(var i=0;i<rows.length;i++){if(String(v(rows[i],'user_id'))===String(id))return rows[i];}
+  return null;
+}
+function safeName(s){
+  return String(s||'role').trim().replace(/[\\/:*?"<>|\s]+/g,'_').replace(/^_+|_+$/g,'').slice(0,64)||'role';
+}
+function avatarExt(url,type){
+  var t=String(type||'').toLowerCase();
+  if(t.indexOf('png')>=0)return 'png';
+  if(t.indexOf('webp')>=0)return 'webp';
+  if(t.indexOf('gif')>=0)return 'gif';
+  if(t.indexOf('jpeg')>=0||t.indexOf('jpg')>=0)return 'jpg';
+  var m=String(url||'').split('?')[0].match(/\.([a-z0-9]{2,5})$/i);
+  return m?m[1].toLowerCase():'jpg';
+}
+function saveBlob(blob,name){
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1200);
+}
+function csvCell(v){
+  var s=String(v===undefined||v===null?'':v);
+  return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+}
+async function downloadAvatarZip(){
+  if(!rlist.length){msg('清单为空');return;}
+  if(typeof JSZip==='undefined'){msg('ZIP组件未加载，请联网刷新后重试',2600);return;}
+  var items=[];
+  for(var i=0;i<rlist.length;i++){
+    var row=findRowById(rlist[i]),url=row?v(row,'头像'):'';
+    if(row&&url)items.push({row:row,id:String(v(row,'user_id')),name:v(row,'昵称'),url:String(url)});
+  }
+  if(!items.length){msg('清单里没有头像URL');return;}
+  avatarDownloading=true;updateActionState();
+  var zip=new JSZip(),fail=[],done=0;
+  $('ast').textContent='下载 0/'+items.length;
+  for(var j=0;j<items.length;j++){
+    var it=items[j];
+    try{
+      var resp=await fetch(avatarRequestUrl(it.url),{mode:'cors',credentials:'omit'});
+      if(!resp.ok)throw new Error('HTTP '+resp.status);
+      var blob=await resp.blob();
+      var ext=avatarExt(it.url,blob.type);
+      zip.file(safeName(it.id+'_'+it.name)+'.'+ext,blob);
+    }catch(err){
+      fail.push({user_id:it.id,昵称:it.name,头像:it.url,失败原因:err&&err.message?err.message:String(err)});
+    }
+    done++;
+    $('ast').textContent='下载 '+done+'/'+items.length+(fail.length?' · 失败 '+fail.length:'');
+    await new Promise(function(resolve){setTimeout(resolve,0);});
+  }
+  if(fail.length){
+    var csv='user_id,昵称,头像,失败原因\n'+fail.map(function(f){return [f.user_id,f.昵称,f.头像,f.失败原因].map(csvCell).join(',');}).join('\n');
+    zip.file('头像下载失败清单.csv',csv);
+  }
+  $('ast').textContent='正在打包ZIP...';
+  var out=await zip.generateAsync({type:'blob'},function(meta){$('ast').textContent='打包 '+Math.round(meta.percent)+'%';});
+  saveBlob(out,'角色头像_'+new Date().toISOString().slice(0,10)+'.zip');
+  avatarDownloading=false;updateActionState();
+  var ok=done-fail.length;
+  msg(ok?('已下载 '+ok+' 张头像'+(fail.length?'，失败 '+fail.length+' 条':'')):'头像受跨域限制，已下载失败清单',3200);
+}
 
 function renderRP(){
   var rp=$('rp');
-  if(!rlist.length){rp.innerHTML='<p style="color:var(--text2);font-size:9px;">替换清单为空</p>';return;}
+  if(!rlist.length){rp.innerHTML='<p style="color:var(--text2);font-size:9px;">角色清单为空</p>';return;}
   var items='';
   for(var ri=0;ri<rlist.length;ri++){
-    var id=rlist[ri],row=null;
-    for(var rj=0;rj<rows.length;rj++){if(String(v(rows[rj],'user_id'))===String(id)){row=rows[rj];break;}}
+    var id=rlist[ri],row=findRowById(id);
     if(!row){items+='<div class="rpi">⚠️ '+id+' <button class="rm" data-id="'+id+'">✕</button></div>';continue;}
     var name=v(row,'昵称')||'—',g=gd(row),c=cht(row),img=v(row,'头像'),gc=g==='男'?'m':'f';
     items+='<div class="rpi">'+(img?'<img class="av" src="'+img+'" onerror="this.style.display=\'none\'">':'<div style="width:16px;height:16px;border-radius:50%;background:#eee;"></div>')+'<strong>'+name+'</strong> <span style="font-family:monospace;font-size:8px;color:var(--text2);">'+id+'</span><span class="gb '+gc+'">'+g+'</span> <span style="font-weight:600;">'+c.toLocaleString()+'</span>人次<button class="rm" data-id="'+id+'">✕</button></div>';
   }
-  rp.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><h3>📋 待替换 ('+rlist.length+')</h3><button id="cc" class="btn bo" style="padding:3px 7px;font-size:11px;">清空</button></div>'+renderExportChooser()+items;
+  rp.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><h3>📋 已选角色 ('+rlist.length+')</h3><button id="cc" class="btn bo" style="padding:3px 7px;font-size:11px;">清空</button></div>'+renderExportChooser()+items;
   bindExportControls(rp);
-  rp.querySelectorAll('.rm').forEach(function(btn){btn.addEventListener('click',function(){rlist=rlist.filter(function(i){return i!==btn.dataset.id;});$('bex').disabled=rlist.length===0;renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});});
-  var cb=rp.querySelector('#cc');if(cb)cb.addEventListener('click',function(){rlist=[];$('bex').disabled=true;renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});
+  updateActionState();
+  rp.querySelectorAll('.rm').forEach(function(btn){btn.addEventListener('click',function(){rlist=rlist.filter(function(i){return i!==btn.dataset.id;});updateActionState();renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});});
+  var cb=rp.querySelector('#cc');if(cb)cb.addEventListener('click',function(){rlist=[];updateActionState();renderRP();caches={};rs(document.querySelector('.tab.act').dataset.s);});
 }
 
+$('bdav').addEventListener('click',function(){downloadAvatarZip();});
 $('bex').addEventListener('click',function(){
   if(!rlist.length){msg('清单为空');return;}
   exportCols=uniqCols(exportCols);
   if(!exportCols.length){msg('请至少选择一个导出字段');return;}
   var out=[];
   for(var ri=0;ri<rlist.length;ri++){var id=rlist[ri],row=null;
-    for(var rj=0;rj<rows.length;rj++){if(String(v(rows[rj],'user_id'))===String(id)){row=rows[rj];break;}}
+    row=findRowById(id);
     if(!row)continue;var obj={};
     for(var hi=0;hi<exportCols.length;hi++){var col=exportCols[hi];obj[col]=exportValue(row,col);}
     out.push(obj);}
   if(!out.length){msg('无数据');return;}
   var ws=XLSX.utils.json_to_sheet(out);var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'替换清单');
-  XLSX.writeFile(wb,'替换清单_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  XLSX.utils.book_append_sheet(wb,ws,'角色清单');
+  XLSX.writeFile(wb,'Top角色清单_'+new Date().toISOString().slice(0,10)+'.xlsx');
   msg('📥 已导出 '+out.length+' 条，'+exportCols.length+' 个字段');
 });
 document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();$('bex').click();}});
