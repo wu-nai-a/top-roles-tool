@@ -85,6 +85,14 @@
 
 公开站点如需让访客也能批量下载头像，请同时部署图片代理，见 [Public Batch Avatar Download](docs/public-batch-avatar-download.md)。
 
+仓库已包含 Cloudflare Workers 免费版配置 `wrangler.toml`。登录 Cloudflare 后，可在项目目录运行：
+
+```bash
+npx wrangler deploy
+```
+
+部署成功后，把 Worker URL 填到网页的“头像下载代理”即可。
+
 ### 直接分享
 
 将 `index.html` 文件发送给同事，直接用浏览器打开即可使用。若需要批量下载头像，建议使用 GitHub Pages + 图片代理。
@@ -112,6 +120,7 @@ top-roles-tool/
 │   └── ai-top-roles-sample.xlsx            # 新用户体验用测试集
 ├── workers/
 │   └── avatar-proxy.js                     # 可选 Cloudflare Worker 图片代理
+├── wrangler.toml                           # Cloudflare Workers 免费版部署配置
 ├── README.md                               # 本说明文件
 └── .gitignore                              # Git 忽略规则
 ```

@@ -8,6 +8,7 @@
  */
 
 const DEFAULT_ALLOWED_IMAGE_HOSTS = "ttq-pub.oss-cn-beijing.aliyuncs.com";
+const DEFAULT_ALLOWED_ORIGINS = "https://wu-nai-a.github.io";
 const DEFAULT_MAX_BYTES = 20 * 1024 * 1024;
 
 export default {
@@ -86,7 +87,7 @@ function parseCsv(value) {
 }
 
 function corsHeaders(request, env) {
-  const allowedOrigins = parseCsv(env.ALLOWED_ORIGINS || "*");
+  const allowedOrigins = parseCsv(env.ALLOWED_ORIGINS || DEFAULT_ALLOWED_ORIGINS);
   const origin = request.headers.get("Origin") || "*";
   const allowOrigin = allowedOrigins.includes("*") || allowedOrigins.includes(origin) ? origin : allowedOrigins[0] || "*";
   return new Headers({
