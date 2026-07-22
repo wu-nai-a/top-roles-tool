@@ -238,8 +238,8 @@
     <button class="btn bo" id="brf">🔄 刷新</button>
     <button class="btn bo" id="bselpg">☑️ 勾选本页</button>
     <button class="btn bo" id="bclearpg">⬜ 取消本页</button>
-    <button class="btn bo" id="ballf">➕ 当前筛选加入清单</button>
-    <button class="btn bp" id="bar">➕ 添加至角色清单</button>
+    <button class="btn bo" id="ballf">➕ 添加全部列表角色</button>
+    <button class="btn bp" id="bar">➕ 添加勾选角色</button>
     <button class="btn bs" id="bex" disabled>📥 导出角色清单</button>
     <span class="ast" id="ast"></span>
   </div>
@@ -264,7 +264,7 @@
         <div class="help-step"><b>2</b><div><strong>筛选角色</strong><span>用性别、时段、最低聊天人数、Top≥100 等条件缩小范围。</span></div></div>
         <div class="help-step"><b>3</b><div><strong>分页浏览</strong><span>每页 500 条，可用下一页查看 501-1000 及后续数据。</span></div></div>
         <div class="help-step"><b>4</b><div><strong>查看分析</strong><span>分析页会展示热门题材、标签和性别偏好图表。</span></div></div>
-        <div class="help-step"><b>5</b><div><strong>加入清单</strong><span>勾选目标角色后，点击“添加至角色清单”。头像可以点击放大。</span></div></div>
+        <div class="help-step"><b>5</b><div><strong>加入清单</strong><span>点击“添加勾选角色”只加入已勾选内容；点击“添加全部列表角色”会加入当前筛选列表的全部结果。</span></div></div>
         <div class="help-step"><b>6</b><div><strong>导出清单</strong><span>选择需要的字段后，将角色清单导出为 XLSX。</span></div></div>
       </div>
       <div class="help-tips">没有现成表格时，可以先 <a href="test-datasets/ai-top-roles-sample.xlsx" download="ai-top-roles-sample.xlsx">下载测试集</a> 体验完整流程。常用导出：如果只需要 UID 和图片链接，角色清单页默认已选择 user_id 与头像 URL。</div>
@@ -907,7 +907,7 @@ $('ballf').addEventListener('click',function(){
   if(sec==='analysis'||sec==='replace'){msg('请先切到总表/男女/新音色页');return;}
   var data=getC(sec),ids=[];
   for(var i=0;i<data.length;i++){var id=v(data[i],'user_id');if(id)ids.push(String(id));}
-  addIdsToList(ids,'已加入当前筛选');
+  addIdsToList(ids,'已加入全部列表');
 });
 document.addEventListener('change',function(e){
   if(e.target&&e.target.classList&&e.target.classList.contains('pgchk'))setCurrentPageChecks(e.target.checked);
